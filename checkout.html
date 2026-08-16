@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | AYEZLING</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --pill-bg: #F4EBE6;
+      --text: #333333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); padding: 30px 15px 50px; }
+
+    .checkout-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      border: 1px solid #f2e6eb;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 5px;
+    }
+
+    .sub-title {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .summary-box {
+      background: var(--pill-bg);
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    .summary-box h3 {
+      font-size: 15px;
+      color: var(--primary);
+      margin-bottom: 12px;
+      border-bottom: 1px solid #e2d2db;
+      padding-bottom: 6px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .summary-row.total {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 16px;
+      border-top: 1px dashed #cbb1bd;
+      padding-top: 8px;
+      margin-top: 10px;
+    }
+
+    .form-group { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus { border-color: var(--primary); }
+
+    .payment-instructions {
+      background: #fdf8f5;
+      border: 1px solid #ebd9e1;
+      padding: 18px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .payment-instructions strong { color: var(--primary); }
+    .payment-instructions ul { list-style: none; padding: 0; margin: 8px 0 12px; }
+    .payment-instructions li { margin-bottom: 4px; }
+
+    .payment-instructions-footer {
+      border-top: 1px dashed #e2d2db;
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: opacity 0.3s;
+    }
+
+    .btn-submit:hover { opacity: 0.9; }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #777;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      width: 90%;
+      max-width: 420px;
+      padding: 30px 25px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(140, 59, 91, 0.15);
+      border: 1px solid #f2e6eb;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--pill-bg);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 15px;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .modal-msg {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .modal-msg b { color: var(--primary); }
+
+    .btn-modal {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(140, 59, 91, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="checkout-container">
+    <h1>AYEZLING</h1>
+    <div class="sub-title">Complete Your Order</div>
+
+    <div class="summary-box">
+      <h3>Order Summary</h3>
+      <div class="summary-row">
+        <span>Order Reference:</span>
+        <strong id="display-order-id" style="color: var(--primary);">#1001</strong>
+      </div>
+      <div class="summary-row">
+        <span>Item(s):</span>
+        <strong id="display-item-name" style="text-align: right; max-width: 60%;">Loading...</strong>
+      </div>
+      <div class="summary-row">
+        <span>Item Price:</span>
+        <span id="display-item-price">PKR 0</span>
+      </div>
+      <div class="summary-row">
+        <span>Delivery Fee:</span>
+        <span>PKR 200</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total Amount:</span>
+        <span id="display-total-price">PKR 0</span>
+      </div>
+    </div>
+
+    <form onsubmit="processOrder(event)">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="cust-name" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address (For Order Receipt) *</label>
+        <input type="email" id="cust-email" placeholder="example@gmail.com" required>
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp / Phone Number *</label>
+        <input type="tel" id="cust-phone" placeholder="03XXXXXXXXX" required pattern="[0-9]{11}" title="Please enter valid 11-digit mobile number">
+      </div>
+
+      <div class="form-group">
+        <label>Complete Delivery Address *</label>
+        <textarea id="cust-address" rows="3" placeholder="House/Flat No, Street, Area" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>City *</label>
+        <input type="text" id="cust-city" placeholder="e.g. Lahore, Karachi, Islamabad" required>
+      </div>
+
+      <div class="payment-instructions">
+        <strong>Payment Instructions:</strong><br>
+        Please send total amount via Nayapay to:
+        <ul>
+          <li><strong>Account Title:</strong> Aiza Butt</li>
+          <li><strong>Bank / Wallet:</strong> Nayapay</li>
+          <li><strong>Number:</strong> 03006400363</li>
+        </ul>
+        <div class="payment-instructions-footer">
+          • After sending the payment, please enter your Transaction ID (TID) below.<br>
+          • Once your order is confirmed, we will contact you via WhatsApp.
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 15px;">
+        <label>Transaction ID (TID) / Ref Number *</label>
+        <input type="text" id="cust-tid" placeholder="11-12 Digits Code (e.g. 84920184729)" required minlength="6">
+      </div>
+
+      <button type="submit" id="submit-btn" class="btn-submit">Confirm Order</button>
+    </form>
+
+    <a href="index.html" class="back-link">← Back to Shop</a>
+  </div>
+
+  <div class="modal-overlay" id="minOrderModal">
+    <div class="modal-card">
+      <div class="modal-icon"><i class="fas fa-shopping-bag"></i></div>
+      <div class="modal-title">Minimum Order PKR 1,000</div>
+      <div class="modal-msg" id="modalMsg"></div>
+      <button class="btn-modal" onclick="closeModalAndRedirect()">ADD MORE ITEMS</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <script>
+    // MATCHED EXACTLY WITH ADMIN PANEL FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyASgbdHr8Vc1EWaEVxZvZA9-TYbJnUfcws",
+      authDomain: "ayezling.firebaseapp.com",
+      databaseURL: "https://ayezling-default-rtdb.firebaseio.com",
+      projectId: "ayezling",
+      storageBucket: "ayezling.firebasestorage.app",
+      messagingSenderId: "178860148015",
+      appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    (function() {
+        emailjs.init("JGuyU6ywueHNdbnwS");
+    })();
+
+    let lastOrderID = localStorage.getItem('ayezling_last_order_id') || 1000;
+    let currentOrderID = parseInt(lastOrderID) + 1;
+
+    let itemName = '';
+    let itemPrice = 0;
+    let totalUnits = 0;
+    const deliveryFee = 200;
+
+    const cartData = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
+
+    if (cartData.length > 0) {
+      const groupedMap = new Map();
+      cartData.forEach(item => {
+        const title = item.title || item.name || 'Handcrafted Item';
+        const price = Number(item.price) || 0;
+        const qty = item.quantity || 1;
+        
+        if (groupedMap.has(title)) {
+          const prev = groupedMap.get(title);
+          prev.qty += qty;
+        } else {
+          groupedMap.set(title, { title: title, price: price, qty: qty });
+        }
+      });
+
+      const summaryParts = [];
+      groupedMap.forEach(v => {
+        summaryParts.push(`${v.title} (x${v.qty})`);
+        itemPrice += (v.price * v.qty);
+        totalUnits += v.qty;
+      });
+
+      itemName = summaryParts.join(', ');
+    } else {
+      const urlParams = new URLSearchParams(window.location.search);
+      itemName = urlParams.get('item') || 'Custom Jewellery';
+      itemPrice = parseInt(urlParams.get('price')) || 0;
+      totalUnits = 1;
+    }
+
+    const totalPrice = itemPrice + deliveryFee;
+
+    if (totalPrice < 1000) {
+      let remaining = 1000 - totalPrice;
+      document.getElementById('modalMsg').innerHTML = `
+        Minimum total bill requirement is <b>PKR 1,000</b> (including PKR 200 delivery fee).<br><br>
+        Your current total bill is <b>PKR ${totalPrice}</b>. Please add <b>PKR ${remaining}</b> more worth of items to proceed!
+      `;
+      document.getElementById('minOrderModal').classList.add('active');
+    }
+
+    function closeModalAndRedirect() {
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('display-order-id').innerText = `#${currentOrderID}`;
+    document.getElementById('display-item-name').innerText = itemName || 'No items selected';
+    document.getElementById('display-item-price').innerText = `PKR ${itemPrice}`;
+    document.getElementById('display-total-price').innerText = `PKR ${totalPrice}`;
+
+    function processOrder(event) {
+      event.preventDefault();
+
+      if (totalPrice < 1000) {
+        document.getElementById('minOrderModal').classList.add('active');
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.innerText = "Processing...";
+      btn.disabled = true;
+
+      const customerName = document.getElementById('cust-name').value.trim();
+      const customerEmail = document.getElementById('cust-email').value.trim();
+      const customerPhone = document.getElementById('cust-phone').value.trim();
+      const city = document.getElementById('cust-city').value.trim();
+      const fullAddress = `${document.getElementById('cust-address').value.trim()}, ${city}`;
+
+      // MAP ALL KEYS ACCEPTED BY ADMIN PANEL & EMAIL SYSTEM
+      const orderData = {
+        orderRef: `#${currentOrderID}`,
+        customerName: customerName,
+        customerEmail: customerEmail,
+        customerPhone: customerPhone,
+        customerAddress: fullAddress,
+        name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+        address: fullAddress,
+        city: city,
+        tid: document.getElementById('cust-tid').value.trim(),
+        itemsSummary: itemName,
+        items: cartData.length > 0 ? cartData : [{ name: itemName, price: itemPrice, quantity: 1 }],
+        subtotal: itemPrice,
+        deliveryFee: deliveryFee,
+        total: totalPrice,
+        totalAmount: totalPrice,
+        totalPrice: totalPrice,
+        status: "Pending",
+        date: new Date().toLocaleDateString(),
+        createdAt: new Date().toLocaleString(),
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      };
+
+      const newOrderRef = database.ref('orders').push();
+      newOrderRef.set(orderData)
+        .then(() => {
+          sendOrderConfirmation(orderData);
+          localStorage.setItem('ayezling_last_order_id', currentOrderID);
+          localStorage.removeItem('ayezling_cart');
+          setTimeout(() => {
+            window.location.href = `order-success.html?orderId=${currentOrderID}`;
+          }, 800);
+        })
+        .catch((error) => {
+          alert("Error placing order: " + error.message);
+          btn.innerText = "Confirm Order";
+          btn.disabled = false;
+        });
+    }
+
+    function sendOrderConfirmation(orderData) {
+      const templateParams = {
+        to_email: orderData.customerEmail,
+        email: orderData.customerEmail,
+        to_name: orderData.customerName,
+        order_id: orderData.orderRef,
+        name: itemName,
+        units: totalUnits.toString(),
+        price: orderData.subtotal.toString(),
+        cost: {
+          shipping: orderData.deliveryFee.toString(),
+          tax: "0",
+          total: orderData.totalAmount.toString()
+        }
+      };
+
+      emailjs.send('service_rb7q0hq', 'template_2cjp05j', templateParams)
+        .then(function(response) {
+          console.log('Order Email Sent Successfully!', response.status, response.text);
+        }, function(error) {
+          console.log('Failed to send email...', error);
+        });
+    }
+  </script>
+</body>
+</html>

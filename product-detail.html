@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details | AYEZLING</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --text: #333333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background: #ffffff;
+      border-bottom: 1px solid #f2e6eb;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .cart-btn {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .cart-count {
+      background: #ffffff;
+      color: var(--primary);
+      border-radius: 50%;
+      padding: 1px 7px;
+      font-size: 11px;
+    }
+
+    .product-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .product-image-box {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 15px;
+      border: 1px solid #f2e6eb;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.03);
+    }
+
+    .product-image-box img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+    }
+
+    .product-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .product-category {
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #888;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .product-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 38px;
+      color: var(--primary);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .product-price {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .product-description {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .qty-picker {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .qty-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .qty-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .qty-val {
+      font-size: 16px;
+      font-weight: 600;
+      width: 25px;
+      text-align: center;
+    }
+
+    .btn-add-cart {
+      flex: 1;
+      min-width: 180px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity 0.3s;
+    }
+
+    .btn-add-cart:hover { opacity: 0.9; }
+
+    #custom-toast {
+      position: fixed;
+      top: 30px; right: 30px;
+      background: #ffffff; color: #333;
+      padding: 12px 22px; border-radius: 50px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border: 1px solid #f2e6eb;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px; font-weight: 500; z-index: 99999;
+      opacity: 0; visibility: hidden;
+      transform: translateY(-20px); transition: all 0.35s ease;
+    }
+
+    #custom-toast.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    .toast-badge {
+      background: var(--primary); color: #ffffff;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 11px;
+    }
+
+    .state-message {
+      text-align: center; padding: 80px 20px; font-size: 16px; color: #666;
+    }
+
+    .state-message a { color: var(--primary); font-weight: 600; text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .product-container { grid-template-columns: 1fr; gap: 25px; }
+      .product-title { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+    <a href="index.html" class="brand-logo">AYEZLING</a>
+    <a href="cart.html" class="cart-btn">
+      <i class="fas fa-shopping-bag"></i> <span class="cart-count" id="cart-count">0</span>
+    </a>
+  </header>
+
+  <div id="custom-toast"></div>
+
+  <div id="product-view">
+    <div class="state-message">Loading product details...</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // FIXED: Matched with Admin Database URL
+    const firebaseConfig = {
+      apiKey: "AIzaSyASgbdHr8Vc1EWaEVxZvZA9-TYbJnUfcws",
+      authDomain: "ayezling.firebaseapp.com",
+      databaseURL: "https://ayezling-default-rtdb.firebaseio.com",
+      projectId: "ayezling",
+      storageBucket: "ayezling.firebasestorage.app",
+      messagingSenderId: "178860148015",
+      appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
+    let currentQuantity = 1;
+    let currentProduct = null;
+
+    function getCleanImagePath(img) {
+      const fallback = 'https://via.placeholder.com/400x400?text=Ayezling+Jewellery';
+      if (!img) return fallback;
+      
+      let cleanImg = String(img).trim().replace(/\\/g, '/');
+      
+      if (cleanImg.startsWith('http://') || cleanImg.startsWith('https://') || cleanImg.startsWith('data:image')) {
+        return cleanImg;
+      }
+      
+      if (cleanImg.startsWith('/')) cleanImg = cleanImg.substring(1);
+      return cleanImg;
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('custom-toast');
+      toast.innerHTML = `<div class="toast-badge">✓</div><span>${message}</span>`;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 2800);
+    }
+
+    function updateCartCount() {
+      const el = document.getElementById('cart-count');
+      if (el) el.innerText = cart.length;
+    }
+
+    function updateQty(change) {
+      currentQuantity = Math.max(1, currentQuantity + change);
+      document.getElementById('qty-display').innerText = currentQuantity;
+    }
+
+    function addToCart() {
+      if (!currentProduct) return;
+
+      const rawImg = currentProduct.image || currentProduct.imageUrl || currentProduct.img;
+      const imgPath = getCleanImagePath(rawImg);
+
+      for (let i = 0; i < currentQuantity; i++) {
+        cart.push({
+          id: currentProduct.id,
+          title: currentProduct.title || 'Handcrafted Item',
+          price: Number(currentProduct.price || 0),
+          image: imgPath
+        });
+      }
+
+      localStorage.setItem('ayezling_cart', JSON.stringify(cart));
+      updateCartCount();
+      showToast(`${currentQuantity}x "${currentProduct.title}" added to cart!`);
+    }
+
+    function loadProduct() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      const view = document.getElementById('product-view');
+
+      if (!productId) {
+        view.innerHTML = `<div class="state-message">Product Not Found! <a href="index.html">Go back to store</a></div>`;
+        return;
+      }
+
+      database.ref('products/' + productId).once('value').then((snapshot) => {
+        const product = snapshot.val();
+
+        if (!product) {
+          view.innerHTML = `<div class="state-message">Product Not Found! <a href="index.html">Go back to store</a></div>`;
+          return;
+        }
+
+        currentProduct = { id: productId, ...product };
+        const rawImg = product.image || product.imageUrl || product.img;
+        const imgPath = getCleanImagePath(rawImg);
+
+        view.innerHTML = `
+          <div class="product-container">
+            <div class="product-image-box">
+              <img src="${imgPath}" alt="${product.title || 'Jewellery'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400?text=No+Image+Available';">
+            </div>
+            <div class="product-details">
+              <div class="product-category">${product.category || 'Handcrafted'}</div>
+              <h1 class="product-title">${product.title || 'Handcrafted Item'}</h1>
+              <div class="product-price">Rs. ${product.price || 0}</div>
+              <p class="product-description">${product.description || 'Handmade with high-quality beads and materials. Ideal for gifting and everyday aesthetic wear.'}</p>
+              
+              <div class="qty-picker">
+                <button class="qty-btn" onclick="updateQty(-1)">-</button>
+                <span class="qty-val" id="qty-display">1</span>
+                <button class="qty-btn" onclick="updateQty(1)">+</button>
+              </div>
+
+              <div class="action-buttons">
+                <button class="btn-add-cart" onclick="addToCart()">Add To Cart</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).catch((err) => {
+        console.error(err);
+        view.innerHTML = `<div class="state-message">Failed to load product details. <a href="index.html">Return to store</a></div>`;
+      });
+    }
+
+    window.onload = function() {
+      updateCartCount();
+      loadProduct();
+    };
+  </script>
+</body>
+</html>

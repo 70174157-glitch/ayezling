@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Support | AYEZLING</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --text: #333333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+
+    .support-box {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 35px 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      border: 1px solid #f2e6eb;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    p.subtext {
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="support-box">
+    <h2>Contact Support</h2>
+    <p class="subtext">Have a question or complaint? We're here to help!</p>
+
+    <form id="supportForm">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="custName" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp / Phone Number</label>
+        <input type="tel" id="custPhone" placeholder="03XXXXXXXXX" required>
+      </div>
+
+      <div class="form-group">
+        <label>Issue Type</label>
+        <select id="issueType" required>
+          <option value="Order Status">Order Status Inquiry</option>
+          <option value="Payment / TID Issue">Payment / TID Verification Issue</option>
+          <option value="Custom Order Query">Custom Order Request</option>
+          <option value="Damaged / Wrong Item">Damaged or Wrong Item Received</option>
+          <option value="Other">Other Complaint</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Transaction ID / Order ID (Optional)</label>
+        <input type="text" id="custTID" placeholder="e.g. 123456789012">
+      </div>
+
+      <div class="form-group">
+        <label>Describe Your Issue</label>
+        <textarea id="custMessage" rows="4" placeholder="Explain your complaint or query in detail..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">Send to WhatsApp Support</button>
+    </form>
+
+    <a href="index.html" class="back-link">← Back to Store</a>
+  </div>
+
+  <script>
+    document.getElementById('supportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const issue = document.getElementById('issueType').value;
+      const tid = document.getElementById('custTID').value.trim() || 'N/A';
+      const message = document.getElementById('custMessage').value.trim();
+
+      // Formats message directly to WhatsApp
+      const adminWhatsApp = "+923334827906"; // Replace with your WhatsApp number
+      
+      const text = `🚨 *NEW SUPPORT / COMPLAINT TICKET*%0A%0A` +
+                   `👤 *Name:* ${name}%0A` +
+                   `📞 *Phone:* ${phone}%0A` +
+                   `📌 *Issue Type:* ${issue}%0A` +
+                   `🆔 *TID/Order ID:* ${tid}%0A` +
+                   `💬 *Message:* ${message}`;
+
+      window.open(`https://wa.me/${adminWhatsApp}?text=${text}`, '_blank');
+    });
+  </script>
+
+</body>
+</html>

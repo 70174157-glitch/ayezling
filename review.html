@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Write a Review | AYEZLING</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary: #8C3B5B; --bg: #FAF8F5; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); padding: 40px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    
+    .review-box { background: #fff; border-radius: 16px; padding: 30px; max-width: 450px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid #f2e6eb; text-align: center; }
+    h2 { font-family: 'Cormorant Garamond', serif; color: var(--primary); font-size: 32px; margin-bottom: 8px; }
+    p { font-size: 13px; color: #666; margin-bottom: 25px; }
+    .form-group { text-align: left; margin-bottom: 18px; }
+    label { font-size: 12px; font-weight: 600; color: #333; display: block; margin-bottom: 6px; text-transform: uppercase; }
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    button { width: 100%; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 30px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    button:hover { opacity: 0.9; }
+    .back-link { display: inline-block; margin-top: 18px; font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 600; }
+
+    /* Custom Notification Toast */
+    #custom-toast {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      background: #ffffff;
+      color: #333333;
+      padding: 12px 22px;
+      border-radius: 50px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f2e6eb;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 99999;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-20px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #custom-toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .toast-badge {
+      background: #8C3B5B;
+      color: #ffffff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
+  </style>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="custom-toast"></div>
+
+  <div class="review-box">
+    <h2>Write a Review</h2>
+    <p>Share your experience with AYEZLING products!</p>
+    
+    <form id="reviewForm">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="reviewerName" required>
+      </div>
+
+      <div class="form-group">
+        <label>Rating</label>
+        <select id="reviewerRating" required>
+          <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+          <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+          <option value="3">⭐⭐⭐ (3 Stars)</option>
+          <option value="2">⭐⭐ (2 Stars)</option>
+          <option value="1">⭐ (1 Star)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Your Review</label>
+        <textarea id="reviewerComment" rows="4" placeholder="Tell us what you liked about your jewellery..." required></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn">Submit Review ✨</button>
+    </form>
+
+    <a href="index.html" class="back-link">← Back to Store</a>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBgZJd27MY_MU7O2j7-TBMHAEv38XQCMZM",
+      authDomain: "reviews-section-6250e.firebaseapp.com",
+      databaseURL: "https://reviews-section-6250e-default-rtdb.firebaseio.com",
+      projectId: "reviews-section-6250e",
+      storageBucket: "reviews-section-6250e.firebasestorage.app",
+      messagingSenderId: "327890142378",
+      appId: "1:327890142378:web:1c91101e3b7c6c69b63cd3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('custom-toast');
+      const badgeIcon = isError ? '!' : '✓';
+      toast.innerHTML = `
+        <div class="toast-badge">${badgeIcon}</div>
+        <span>${message}</span>
+      `;
+      toast.classList.add('show');
+    }
+
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Submitting...";
+
+      const name = document.getElementById('reviewerName').value;
+      const rating = Number(document.getElementById('reviewerRating').value);
+      const comment = document.getElementById('reviewerComment').value;
+
+      database.ref('reviews').push({
+        name: name,
+        rating: rating,
+        comment: comment,
+        timestamp: Date.now()
+      })
+      .then(() => {
+        showToast("Thank you! Your review is live now ✨");
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1800);
+      })
+      .catch((error) => {
+        showToast("Error: " + error.message, true);
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Review ✨";
+      });
+    });
+  </script>
+</body>
+</html>

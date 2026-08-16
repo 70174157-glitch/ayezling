@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYEZLING | Upload Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --text: #333333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+    
+    .admin-container {
+      max-width: 550px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 35px;
+      border-radius: 16px;
+      border: 1px solid #f2e6eb;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    .admin-container h2 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 32px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .admin-container p {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 25px;
+    }
+    
+    .btn-bulk {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+      transition: opacity 0.3s;
+    }
+    .btn-bulk:hover { opacity: 0.9; }
+
+    .admin-form { display: flex; flex-direction: column; gap: 12px; }
+    .admin-form label { font-size: 12px; font-weight: 600; color: var(--primary); }
+    .admin-form input, .admin-form select {
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+    .admin-form input:focus, .admin-form select:focus { border-color: var(--primary); }
+    .btn-submit {
+      background: var(--primary);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.3s;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <h2>AYEZLING Admin Panel</h2>
+    <p>Upload products to live Firebase Database</p>
+
+    <!-- DIRECT ONE-CLICK BULK MIGRATION -->
+    <button class="btn-bulk" onclick="uploadEmbeddedProducts()">⚡ Upload All 50+ Products To Firebase (1-Click)</button>
+
+    <hr style="margin-bottom: 25px; border: 0; border-top: 1px solid #f2e6eb;">
+
+    <!-- SINGLE PRODUCT UPLOAD FORM -->
+    <h3 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); font-size: 24px; margin-bottom: 15px; text-align: center;">Add Single Product</h3>
+    
+    <form class="admin-form" onsubmit="addNewProduct(event)">
+      <div>
+        <label>Product Title</label>
+        <input type="text" id="p-title" placeholder="e.g. Butterfly Keychain" required>
+      </div>
+
+      <div>
+        <label>Price (PKR)</label>
+        <input type="number" id="p-price" placeholder="e.g. 550" required>
+      </div>
+
+      <div>
+        <label>Category</label>
+        <select id="p-category" required>
+          <option value="keychains">Keychains</option>
+          <option value="bracelets">Bracelets</option>
+          <option value="charms">Phone Charms</option>
+          <option value="necklaces">Necklaces</option>
+          <option value="earrings">Earrings</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Image Path / Name</label>
+        <input type="text" id="p-image" placeholder="e.g. keychain1.jpeg" required>
+      </div>
+
+      <button type="submit" class="btn-submit">+ Upload New Product</button>
+    </form>
+  </div>
+
+  <!-- FIREBASE LIBRARIES -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxq88wtry8NJkGmA9N1E2MoZt0C9hlnbk",
+      authDomain: "best-seller-59821.firebaseapp.com",
+      databaseURL: "https://best-seller-59821-default-rtdb.firebaseio.com",
+      projectId: "best-seller-59821",
+      storageBucket: "best-seller-59821.firebasestorage.app",
+      messagingSenderId: "181588575570",
+      appId: "1:181588575570:web:d753872b952eae716fa68b",
+      measurementId: "G-GETBQ97685"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // YOUR COMPLETE DATA EMBEDDED DIRECTLY
+    const embeddedProducts = [
+      { category: 'keychains', title: 'Gothic Spider & Heart Keychain', price: 450, image: 'keychain1.jpeg' },
+      { category: 'keychains', title: 'Sparkly Purple Butterfly Keychain', price: 549, image: 'keychain2.jpeg' },
+      { category: 'keychains', title: 'Handcrafted Beaded Flower Bouquet Keychain', price: 549, image: 'keychain3.jpeg' },
+      { category: 'keychains', title: 'Chic Bow & Pearl Dangle Keychain', price: 450, image: 'keychain4.jpeg' },
+      { category: 'keychains', title: 'Classic Black Crystal Bow Keychain', price: 449, image: 'keychain5.jpeg' },
+      { category: 'keychains', title: 'Lavender Crystal Flower Keychain', price: 449, image: 'keychain6.jpeg' },
+      { category: 'keychains', title: 'Elegant Pearl Bow & Heart Dangle Keychain', price: 499, image: 'keychain7.jpeg' },
+      { category: 'keychains', title: 'Vintage Black Beaded Ribbon Bow Keychain', price: 450, image: 'keychain8.jpeg' },
+      { category: 'keychains', title: 'Gold and white Floral Beaded Keychain', price: 450, image: 'keychain9.jpeg' },
+      { category: 'keychains', title: 'Minimalist Pearl Ribbon Bow Keychain', price: 449, image: 'keychain10.jpeg' },
+      { category: 'keychains', title: 'Royal Blue Floral Beaded Keychain', price: 499, image: 'keychain11.jpeg' },
+      { category: 'keychains', title: 'Puffy Beaded Pearl Heart Keychain', price: 549, image: 'keychain12.jpeg' },
+      { category: 'keychains', title: 'Mini Beaded Pearl Handbag Keychain', price: 549, image: 'keychain13.jpeg' },
+      
+      { category: 'charms', title: 'Mini Pearl Bag Phone Charm', price: 500, image: 'charm2.500.jpeg' },
+      { category: 'charms', title: 'Cute Beaded Cartoon Duo Phone Charm (Each)', price: 550, image: 'charm5.550.jpeg' },
+      { category: 'charms', title: 'Classic Pearl Loop Phone Charm', price: 499, image: 'charm6.499.jpeg' },
+      { category: 'charms', title: 'Pink Butterfly Beaded Circle Phone Charm', price: 499, image: 'charm8.499.jpeg' },
+      { category: 'charms', title: 'Yellow Cute Character Dangle Phone Charm', price: 550, image: 'charm12.550.jpeg' },
+      { category: 'charms', title: 'Pastel Multicolor Floral Beaded Wristlet', price: 499, image: 'charm13.499.jpeg' },
+      { category: 'charms', title: 'Elegant Pearl Loop Phone Charm', price: 499, image: 'charm14.499.jpeg' },
+      { category: 'charms', title: 'Mini Pink Chick Beaded Dangle Charm', price: 550, image: 'charm15.550.jpeg' },
+      { category: 'charms', title: 'Translucent Pink Butterfly Phone Charm', price: 350, image: 'charm16.350.jpeg' },
+      { category: 'charms', title: 'Gothic Playing Cards Beaded Dangle', price: 499, image: 'charm17.499.jpeg' },
+      { category: 'charms', title: 'Crystal Pink Heart & Bow Dangle Charm', price: 499, image: 'charm19.499.jpeg' },
+      { category: 'charms', title: 'Purple Crystal Butterfly Phone Charm', price: 400, image: 'charm20.400.jpeg' },
+      { category: 'charms', title: 'Monochrome Heart & Star Beaded Charm', price: 450, image: 'charm21.450.jpeg' },
+      { category: 'charms', title: 'Black & White Pearl Dangle Phone Charm', price: 400, image: 'charm22.400.jpeg' },
+      { category: 'charms', title: 'Colorful Beaded Round Globe Phone Charm', price: 550, image: 'charm23.550.jpeg' },
+      { category: 'charms', title: 'Green Crystal Flower Outline Charm', price: 550, image: 'charm24.550.jpeg' },
+      { category: 'charms', title: 'Red Butterfly & Pearl Dangle Phone Charm', price: 400, image: 'charm25.400.jpeg' },
+      { category: 'charms', title: 'Cute Pink Bunny & Key Phone Charm', price: 450, image: 'charm27.450.jpeg' },
+      { category: 'charms', title: 'Hello Kitty Beaded Figure Phone Charm', price: 800, image: 'charm28.800.jpeg' },
+      { category: 'charms', title: 'Pink Crystal Heart Dangle Phone Charm', price: 400, image: 'charm29.400.jpeg' },
+      { category: 'charms', title: 'Purple Crystal Butterfly Circle Charm', price: 499, image: 'charm30.499.jpeg' },
+      { category: 'charms', title: 'Mini Beaded Duck Figure Phone Charm', price: 550, image: 'charm31.550.jpeg' },
+      { category: 'charms', title: 'Multi-Strand Heart Dangle Phone Charm', price: 450, image: 'charm32.450.jpeg' },
+      { category: 'charms', title: 'Yellow Butterfly & Heart Dangle Charm', price: 400, image: 'charm33.400.jpeg' },
+      { category: 'charms', title: 'Cute Cherry Dangle Beaded Charm', price: 400, image: 'charm35.400.jpeg' },
+      { category: 'charms', title: 'Beaded Spider-Man 3D Phone Charm', price: 900, image: 'charm36.900.jpeg' },
+      { category: 'charms', title: 'Pearl Bow Dangle Phone Charm', price: 450, image: 'charm38.450.jpeg' },
+      { category: 'charms', title: 'Pink Floral Dangle Phone Charm', price: 400, image: 'charm39.400.jpeg' },
+      { category: 'charms', title: 'Green Leaf & Flower Dangle Charm', price: 350, image: 'charm40.350.jpeg' },
+      { category: 'charms', title: 'Silver Heart Accent Dangle Charm', price: 350, image: 'charm41.350.jpeg' },
+      { category: 'charms', title: 'Delicate Beaded Heart Dangle Charm', price: 450, image: 'charm42.450.jpeg' },
+      { category: 'charms', title: 'Green Butterfly Dangle Phone Charm', price: 500, image: 'charm43.500.jpeg' },
+      { category: 'charms', title: 'Dual Pearl Ribbon Bow Phone Charms (Each)', price: 450, image: 'charm44.450.jpeg' },
+      { category: 'charms', title: 'Beaded Playing Cards Couple Charms (Each)', price: 450, image: 'charm46.450.jpeg' },
+      { category: 'charms', title: 'Beaded Floral Loop Set Charms (Each)', price: 850, image: 'charm47.850.jpeg' },
+      { category: 'charms', title: 'Chic Pink Crystal Bow Phone Charm', price: 450, image: 'charm50.450.jpeg' },
+      { category: 'charms', title: 'Pastel Beaded Bow Duo Charms (Each)', price: 450, image: 'charm51.450.jpeg' },
+      { category: 'charms', title: 'Red & White Pearl Loop Phone Charm', price: 450, image: 'charm52.450.jpeg' },
+      
+      { category: 'necklaces', title: 'Red & White Beaded Heart Pendant Necklace', price: 450, image: 'necklace2.jpeg' },
+      { category: 'necklaces', title: 'Minimalist Yellow Smiley Beaded Necklace', price: 450, image: 'necklace3.jpeg' },
+      { category: 'necklaces', title: 'Black Beaded Pearl Choker & Bracelet Set', price: 599, image: 'necklace4.jpeg' },
+      { category: 'necklaces', title: 'Elegant Pearl Layered Heart Pendant Necklace', price: 450, image: 'necklace5.jpeg' },
+      { category: 'necklaces', title: 'Double Layered Green & White Beaded Necklace Set', price: 599, image: 'necklace6.jpeg' },
+      { category: 'necklaces', title: 'Delicate Crystal & Pink Accent Necklace', price: 450, image: 'necklace7.jpeg' },
+      { category: 'necklaces', title: 'Black & White Beaded Heart Charm Necklace', price: 450, image: 'necklace8.jpeg' },
+      { category: 'necklaces', title: 'Pink Floral Beaded Necklace & Earring Set', price: 599, image: 'necklace9.jpeg' },
+      { category: 'necklaces', title: 'Pink Beaded Cowrie Shell Pendant Necklace', price: 450, image: 'necklace10.jpeg' },
+      { category: 'necklaces', title: 'Red & Pearl Double Layered Choker Necklace Set', price: 599, image: 'necklace11.jpeg' },
+      
+      { category: 'earrings', title: 'Earring 1', price: 500, image: 'earrings1.jpeg' },
+      { category: 'earrings', title: 'Earring 2', price: 500, image: 'earrings2.jpeg' },
+      { category: 'earrings', title: 'Earring 3', price: 500, image: 'earrings3.jpeg' }
+    ];
+
+    // FUNCTION TO UPLOAD ALL PRODUCTS AUTOMATICALLY
+    function uploadEmbeddedProducts() {
+      if (confirm(`Aapke ${embeddedProducts.length} items Live Store par upload hone lage hain. Proceed karein?`)) {
+        let count = 0;
+        embeddedProducts.forEach(item => {
+          database.ref('products').push({
+            title: item.title,
+            price: Number(item.price),
+            category: item.category,
+            image: item.image,
+            salesCount: 0
+          }).then(() => {
+            count++;
+            if (count === embeddedProducts.length) {
+              alert("✨ Mubarak ho! Saare 50+ products Firebase Database par live upload ho chuke hain!");
+            }
+          });
+        });
+      }
+    }
+
+    // SINGLE PRODUCT UPLOAD
+    function addNewProduct(e) {
+      e.preventDefault();
+      database.ref('products').push({
+        title: document.getElementById('p-title').value,
+        price: Number(document.getElementById('p-price').value),
+        category: document.getElementById('p-category').value,
+        image: document.getElementById('p-image').value,
+        salesCount: 0
+      }).then(() => {
+        alert("✨ Product successfully added!");
+        e.target.reset();
+      });
+    }
+  </script>
+</body>
+</html>

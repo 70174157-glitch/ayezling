@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed | AYEZLING</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --btn-sec-bg: #F4EBE6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Montserrat', sans-serif; 
+      background: var(--bg); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      padding: 20px; 
+    }
+    .container { 
+      background: white; 
+      padding: 45px 30px; 
+      border-radius: 20px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+      max-width: 420px; 
+      width: 100%; 
+      text-align: center;
+      border: 1px solid #f2e6eb;
+    }
+    .thank-you-title {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .sub-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    p { 
+      color: #666; 
+      font-size: 13px; 
+      line-height: 1.6;
+      margin-bottom: 30px; 
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn { 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%; 
+      padding: 14px; 
+      border-radius: 30px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      font-size: 13px; 
+      transition: all 0.3s ease; 
+    }
+    .btn-primary { 
+      background: var(--primary); 
+      color: white; 
+    }
+    .btn-whatsapp { 
+      background: #25D366; 
+      color: white; 
+    }
+    .btn:hover { 
+      opacity: 0.92; 
+      transform: translateY(-2px); 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="thank-you-title">Thank You!</h1>
+    <div class="sub-title">Order Confirmed</div>
+    <p>We have received your order and are processing it. Thank you for shopping with AYEZLING!</p>
+    
+    <div class="btn-group">
+      <a href="index.html" class="btn btn-primary">
+        Continue Shopping
+      </a>
+      <!-- Email Instruction Note -->
+<div style="
+  background: #FFF8E7; 
+  border: 1px solid #FFE0B2; 
+  border-radius: 8px; 
+  padding: 15px; 
+  margin: 20px auto; 
+  max-width: 500px; 
+  text-align: center; 
+  font-size: 13px; 
+  color: #6C757D; 
+  line-height: 1.5;
+">
+  <strong style="color: #8C3B5B; display: block; margin-bottom: 5px;">
+    📧 Check Your Email
+  </strong>
+  A confirmation email has been sent to your inbox once your order is approved. If you don't see it within a few minutes, please check your <strong>Spam</strong> or <strong>Promotions</strong> folder and mark it as <em>'Not Spam'</em>.
+</div>
+      <!-- Instagram Button Fix -->
+<a href="https://instagram.com/ayezling.shop" target="_blank" class="btn-insta-confirm">
+  <i class="fab fa-instagram"></i> Connect on Instagram
+</a>
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

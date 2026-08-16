@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYEZLING | Handcrafted Jewellery</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --pill-bg: #F4EBE6;
+      --card-bg: #FFFFFF;
+      --text: #333333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+
+    /* ANNOUNCEMENT BAR */
+    .announcement-bar {
+      background: var(--primary);
+      color: #ffffff;
+      text-align: center;
+      padding: 8px 15px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* HEADER & GLOW EFFECT */
+    header {
+      text-align: center;
+      padding: 30px 20px 25px;
+      position: relative;
+      background: radial-gradient(circle at top center, rgba(140, 59, 91, 0.08) 0%, rgba(250, 248, 245, 0) 70%);
+    }
+
+    .top-nav {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    .nav-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: #ffffff;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 30px;
+      box-shadow: 0 4px 12px rgba(140, 59, 91, 0.08);
+      border: 1px solid #f2e6eb;
+      transition: all 0.3s ease;
+    }
+
+    .nav-pill-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(140, 59, 91, 0.2);
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 80px;
+      letter-spacing: 6px;
+      font-weight: 600;
+      line-height: 1;
+      margin-top: 5px;
+    }
+
+    .tagline-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .tagline-line {
+      height: 1px;
+      width: 40px;
+      background: rgba(140, 59, 91, 0.3);
+    }
+
+    header p {
+      font-size: 12px;
+      color: #666;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* PREMIUM FLOATING PILL TOAST UI */
+    #custom-toast {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      background: #ffffff;
+      color: #333333;
+      padding: 12px 22px;
+      border-radius: 50px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f2e6eb;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 99999;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-20px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #custom-toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .toast-badge {
+      background: #8C3B5B;
+      color: #ffffff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .cart-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(140, 59, 91, 0.35);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.2s;
+    }
+
+    .cart-btn:hover { transform: scale(1.03); }
+
+    .cart-count {
+      background: #ffffff;
+      color: var(--primary);
+      border-radius: 50%;
+      padding: 2px 8px;
+      font-size: 12px;
+    }
+
+    .category-filter-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 35px 20px 40px;
+    }
+
+    .cat-pill {
+      background: var(--pill-bg);
+      color: var(--primary);
+      border: none;
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .cat-pill:hover, .cat-pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(140, 59, 91, 0.25);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #f2e6eb;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+    }
+
+    .best-seller-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(140, 59, 91, 0.25);
+      z-index: 2;
+    }
+
+    .product-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      background: #f9f9f9;
+      display: block;
+    }
+
+    .product-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .product-price {
+      font-size: 14px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .btn-buy {
+      display: block;
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .btn-buy:hover { opacity: 0.9; }
+
+    .see-more-container {
+      text-align: center;
+      margin: 35px 0 20px;
+    }
+
+    .btn-see-more {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 12px 36px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-see-more:hover {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(140, 59, 91, 0.3);
+    }
+
+    @media (max-width: 992px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 576px) {
+      .products-grid { grid-template-columns: repeat(1, 1fr); }
+      header h1 { font-size: 55px; }
+      .tagline-line { width: 25px; }
+    }
+
+    .custom-banner {
+      max-width: 1060px;
+      margin: 60px auto 30px;
+      background: #F4EBE6;
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .custom-banner h3 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .custom-banner p { font-size: 14px; color: #555; margin-bottom: 22px; }
+
+    .btn-custom {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 13px 32px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .reviews-section {
+      max-width: 1060px;
+      margin: 50px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .reviews-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 36px;
+    }
+
+    .btn-add-review {
+      background: var(--primary);
+      color: white;
+      padding: 10px 22px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .review-card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      border: 1px solid #f2e6eb;
+      text-align: left;
+    }
+
+    .review-stars { color: #FFB800; margin-bottom: 10px; font-size: 16px; }
+    .review-text { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 12px; }
+    .review-author { font-size: 12px; font-weight: 600; color: var(--primary); }
+
+    .support-section {
+      max-width: 1060px;
+      margin: 40px auto 20px;
+      background: #ffffff;
+      border: 1px dashed var(--primary);
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .support-section h4 { color: var(--primary); font-size: 18px; margin-bottom: 8px; }
+    .support-section p { font-size: 13px; color: #666; margin-bottom: 15px; }
+
+    .btn-support {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      padding: 10px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-support:hover { background: var(--primary); color: white; }
+
+    footer { text-align: center; font-size: 12px; color: #888; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="announcement-bar">
+    Handcrafted Aesthetics | Order Your Custom Fits
+  </div>
+
+  <!-- Toast Notification HTML -->
+  <div id="custom-toast"></div>
+
+  <!-- Cart Button -->
+  <div class="cart-btn" onclick="goToCart()">
+    🛒 Cart <span class="cart-count" id="cart-count">0</span>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="top-nav">
+      <a href="https://instagram.com/ayezling.shop" target="_blank" class="nav-pill-btn">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ayezling.shop@gmail.com" target="_blank" class="nav-pill-btn">
+        <i class="fas fa-envelope"></i> Contact Us
+      </a>
+    </div>
+
+    <h1>AYEZLING</h1>
+
+    <div class="tagline-container">
+      <div class="tagline-line"></div>
+      <p>Handcrafted With Love</p>
+      <div class="tagline-line"></div>
+    </div>
+  </header>
+
+  <div class="category-filter-container">
+    <button class="cat-pill active" onclick="filterProducts('all', this)">All Items</button>
+    <button class="cat-pill" onclick="filterProducts('bracelets', this)">Bracelets</button>
+    <button class="cat-pill" onclick="filterProducts('charms', this)">Phone Charms</button>
+    <button class="cat-pill" onclick="filterProducts('keychains', this)">Keychains</button>
+    <button class="cat-pill" onclick="filterProducts('necklaces', this)">Necklaces</button>
+    <button class="cat-pill" onclick="filterProducts('earrings', this)">Earrings</button>
+  </div>
+
+  <!-- PRODUCTS GRID CONTAINER -->
+  <div class="products-grid" id="productsGrid">
+    <p style="grid-column: 1/-1; text-align: center;">Loading products...</p>
+  </div>
+
+  <!-- SEE MORE BUTTON CONTAINER -->
+  <div class="see-more-container" id="seeMoreBtnContainer" style="display: none;">
+    <button class="btn-see-more" onclick="loadMoreProducts()">See More Products ✨</button>
+  </div>
+
+  <div class="custom-banner">
+    <h3>Want a Customized Design?</h3>
+    <p>Choose your own bead colors, sizing, and personalized text.</p>
+    <a href="https://instagram.com/ayezling.shop" target="_blank" class="btn-custom">Order Custom Jewellery</a>
+  </div>
+
+  <div class="reviews-section">
+    <div class="reviews-header">
+      <h3>Customer Reviews</h3>
+      <a href="review.html" class="btn-add-review">+ Write a Review</a>
+    </div>
+    <div class="reviews-grid" id="reviews-container"></div>
+  </div>
+
+  <div class="support-section">
+    <h4>Need Help or Have a Complaint?</h4>
+    <p>For order confirmation, payment receipts, or queries, send us a Direct Message on Instagram.</p>
+    <a href="https://instagram.com/ayezling.shop" target="_blank" class="btn-support">
+      <i class="fab fa-instagram"></i> Message Us on Instagram
+    </a>
+  </div>
+
+  <footer>
+    &copy; 2026 AYEZLING. Handcrafted with Love.
+  </footer>
+
+  <!-- Firebase Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // FIREBASE CONFIGURATION
+    const firebaseConfig = {
+      apiKey: "AIzaSyASgbdHr8Vc1EWaEVxZvZA9-TYbJnUfcws",
+      authDomain: "ayezling.firebaseapp.com",
+      databaseURL: "https://ayezling-default-rtdb.firebaseio.com",
+      projectId: "ayezling",
+      storageBucket: "ayezling.firebasestorage.app",
+      messagingSenderId: "178860148015",
+      appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let allProducts = [];
+    let currentLimit = 64;
+    let activeCategory = 'all';
+    let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
+
+    function getCleanImagePath(img) {
+      if (!img || img === "undefined" || img === "null") {
+        return 'https://via.placeholder.com/300x300?text=Ayezling+Jewellery';
+      }
+
+      let cleanImg = String(img).trim().replace(/\\/g, '/');
+
+      if (cleanImg.startsWith('http://') || cleanImg.startsWith('https://') || cleanImg.startsWith('data:image')) {
+        return cleanImg;
+      }
+
+      if (cleanImg.includes('/')) {
+        cleanImg = cleanImg.split('/').pop();
+      }
+
+      const githubBase = 'https://raw.githubusercontent.com/70174157-glitch/ayezling/main/';
+      return githubBase + cleanImg;
+    }
+
+    function listenToProducts() {
+      const grid = document.getElementById('productsGrid');
+
+      database.ref('products').on('value', (snapshot) => {
+        const data = snapshot.val();
+        
+        if (data) {
+          allProducts = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }));
+        } else {
+          allProducts = [];
+        }
+
+        renderProducts();
+      }, (error) => {
+        console.error("Firebase fetch error:", error);
+        if (grid) {
+          grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Error loading products. Please try again.</p>';
+        }
+      });
+    }
+
+    function openProductDetail(id) {
+      window.location.href = `product-detail.html?id=${id}`;
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      const seeMoreBtn = document.getElementById('seeMoreBtnContainer');
+      if (!grid) return;
+
+      let filtered = allProducts;
+      if (activeCategory !== 'all') {
+        filtered = allProducts.filter(p => p.category === activeCategory);
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">No products available right now.</p>';
+        if (seeMoreBtn) seeMoreBtn.style.display = 'none';
+        return;
+      }
+
+      const visibleProducts = filtered.slice(0, currentLimit);
+
+      grid.innerHTML = visibleProducts.map(product => {
+        const titleEscaped = (product.title || '').replace(/'/g, "\\'");
+        const isBestSeller = (product.salesCount || 0) > 3 ? '<span class="best-seller-badge">✨ Best Seller</span>' : '';
+        const rawImg = product.image || product.imageUrl || product.img || product.photo || product.image_url;
+        const imgPath = getCleanImagePath(rawImg);
+
+        return `
+          <div class="product-card" data-category="${product.category || 'all'}" onclick="openProductDetail('${product.id}')">
+            ${isBestSeller}
+            <img src="${imgPath}" 
+                 alt="${product.title || 'Jewellery Item'}" 
+                 class="product-image"
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Ayezling+Jewellery';">
+            <div class="product-title">${product.title || 'Handcrafted Item'}</div>
+            <div class="product-price">Rs. ${product.price || 0}</div>
+            <button class="btn-buy" onclick="event.stopPropagation(); handleAddToCart('${product.id}', '${titleEscaped}', ${product.price || 0}, '${imgPath}')">Add to Cart</button>
+          </div>
+        `;
+      }).join('');
+
+      if (seeMoreBtn) {
+        seeMoreBtn.style.display = (filtered.length > currentLimit) ? 'block' : 'none';
+      }
+    }
+
+    function handleAddToCart(productId, title, price, image) {
+      const salesRef = database.ref('products/' + productId + '/salesCount');
+      
+      salesRef.transaction((currentSales) => {
+        return (currentSales || 0) + 1;
+      }).catch(() => {});
+
+      addToCart(title, price, image);
+    }
+
+    function loadMoreProducts() {
+      currentLimit += 12;
+      renderProducts();
+    }
+
+    function filterProducts(category, btnElement) {
+      const buttons = document.querySelectorAll('.cat-pill');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      activeCategory = category;
+      renderProducts();
+    }
+
+    function showToast(message, isWarning = false) {
+      let toast = document.getElementById('custom-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'custom-toast';
+        document.body.appendChild(toast);
+      }
+
+      const badgeIcon = isWarning ? '!' : '✓';
+      toast.innerHTML = `
+        <div class="toast-badge">${badgeIcon}</div>
+        <span>${message}</span>
+      `;
+      
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 2800);
+    }
+
+    function addToCart(title, price, imageSrc) {
+      cart.push({ title: title, price: Number(price), image: imageSrc });
+      localStorage.setItem('ayezling_cart', JSON.stringify(cart));
+      updateCartCount();
+      showToast(`"${title}" added to your cart!`);
+    }
+
+    function updateCartCount() {
+      const el = document.getElementById('cart-count');
+      if (el) el.innerText = cart.length;
+    }
+
+    function goToCart() {
+      if (cart.length === 0) {
+        showToast('Your cart is empty!', true);
+        return;
+      }
+      window.location.href = 'cart.html';
+    }
+
+    function loadReviews() {
+      const defaultReviews = [
+        { name: "Ayesha K.", rating: 5, comment: "Bohot pyari keychain hai! Quality is top notch and packaging was super cute ✨" },
+        { name: "Fatima R.", rating: 5, comment: "Loved the beaded bracelet, exact like picture. Will order again soon!" }
+      ];
+
+      let storedReviews = JSON.parse(localStorage.getItem('ayezling_reviews'));
+      
+      if (!storedReviews || storedReviews.length === 0) {
+        localStorage.setItem('ayezling_reviews', JSON.stringify(defaultReviews));
+        storedReviews = defaultReviews;
+      }
+
+      const container = document.getElementById('reviews-container');
+      if (!container) return;
+
+      container.innerHTML = storedReviews.map(r => `
+        <div class="review-card">
+          <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+          <p class="review-text">${r.comment}</p>
+          <span class="review-author">— ${r.name}</span>
+        </div>
+      `).join('');
+    }
+
+    window.onload = function() {
+      listenToProducts();
+      updateCartCount();
+      loadReviews();
+    };
+  </script>
+</body>
+</html>
