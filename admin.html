@@ -6,7 +6,7 @@
   <title>AYEZLING | Admin Dashboard</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -80,7 +80,38 @@
       background: var(--bg);
     }
 
-    /* STATS CARDS ROW */
+    /* STATS HEADER & FILTER */
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #f2e6eb;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    .filter-wrapper select {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* STATS CARDS ROW ENHANCED */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -91,10 +122,45 @@
     .stat-card {
       background: #FFFFFF;
       padding: 22px 25px;
-      border-radius: 12px;
+      border-radius: 16px;
       border: 1px solid #f2e6eb;
       box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
     }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Soft Theming for Cards */
+    .stat-card.card-orders {
+      background: linear-gradient(135deg, #ffffff 0%, #fdf8fa 100%);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card.card-revenue {
+      background: linear-gradient(135deg, #ffffff 0%, #f4fbf7 100%);
+      border-left: 4px solid #27ae60;
+    }
+
+    .stat-card.card-products {
+      background: linear-gradient(135deg, #ffffff 0%, #f6f9fc 100%);
+      border-left: 4px solid #2980b9;
+    }
+
+    .stat-card-icon {
+      position: absolute;
+      right: 20px;
+      top: 22px;
+      font-size: 28px;
+      opacity: 0.15;
+    }
+
+    .card-orders .stat-card-icon { color: var(--primary); }
+    .card-revenue .stat-card-icon { color: #27ae60; }
+    .card-products .stat-card-icon { color: #2980b9; }
 
     .stat-card .stat-label {
       font-size: 11px;
@@ -106,8 +172,8 @@
     }
 
     .stat-card .stat-value {
-      font-size: 26px;
-      font-weight: 600;
+      font-size: 28px;
+      font-weight: 700;
       color: var(--text);
       font-family: 'Cormorant Garamond', serif;
     }
@@ -200,9 +266,7 @@
       transition: color 0.2s;
     }
 
-    .product-link:hover {
-      text-decoration: underline;
-    }
+    .product-link:hover { text-decoration: underline; }
 
     .product-img-thumb {
       width: 48px;
@@ -214,9 +278,7 @@
       transition: transform 0.2s;
     }
 
-    .product-img-thumb:hover {
-      transform: scale(1.08);
-    }
+    .product-img-thumb:hover { transform: scale(1.08); }
 
     .btn-action {
       padding: 6px 14px;
@@ -241,14 +303,45 @@
     .status-accepted { background: #d4edda; color: #155724; }
     .status-dispatched { background: #cce5ff; color: #004085; }
 
-    /* TOAST */
-    #toast {
+    /* MODERN FLOATING TOAST CONTAINER */
+    #toast-container {
       position: fixed;
-      top: 20px; right: 20px;
-      background: var(--primary); color: #fff;
-      padding: 12px 24px; border-radius: 25px;
-      display: none; z-index: 9999; font-size: 13px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      top: 25px;
+      right: 25px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast-card {
+      min-width: 280px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      background: #333333;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+      border-left: 4px solid var(--primary);
+    }
+
+    .toast-card.success { border-left-color: #27ae60; }
+    .toast-card.error { border-left-color: #e74c3c; }
+    .toast-card.info { border-left-color: #2980b9; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
     }
 
     @media (max-width: 900px) {
@@ -263,7 +356,8 @@
 </head>
 <body>
 
-  <div id="toast"></div>
+  <!-- FLOATING TOAST CONTAINER -->
+  <div id="toast-container"></div>
 
   <div class="admin-layout">
     
@@ -286,17 +380,35 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
 
-      <!-- TOP STATS CARDS -->
+      <!-- STATS HEADER & TIME FILTER -->
+      <div class="stats-header">
+        <h3 style="font-size: 16px; font-weight: 600; color: #555;">Dashboard Overview</h3>
+        <div class="filter-wrapper">
+          <i class="fas fa-filter"></i>
+          <span>Time Period:</span>
+          <select id="timeFilter" onchange="applyTimeFilter()">
+            <option value="all">All Time</option>
+            <option value="7days">Last 7 Days</option>
+            <option value="30days">Last 30 Days</option>
+            <option value="6months">Last 6 Months</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TOP STATS CARDS WITH ENHANCED THEME -->
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card card-orders">
+          <i class="fas fa-shopping-bag stat-card-icon"></i>
           <div class="stat-label">TOTAL ORDERS</div>
           <div class="stat-value" id="stat-orders">0</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card card-revenue">
+          <i class="fas fa-wallet stat-card-icon"></i>
           <div class="stat-label">TOTAL REVENUE</div>
           <div class="stat-value" id="stat-revenue">Rs. 0</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card card-products">
+          <i class="fas fa-gem stat-card-icon"></i>
           <div class="stat-label">TOTAL PRODUCTS</div>
           <div class="stat-value" id="stat-products">0</div>
         </div>
@@ -405,11 +517,25 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.innerText = msg;
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    let allOrdersData = null; // Store orders globally for fast filtering
+
+    // MODERN TOAST SYSTEM
+    function showToast(msg, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast-card ${type}`;
+
+      let icon = 'fa-check-circle';
+      if(type === 'error') icon = 'fa-exclamation-circle';
+      if(type === 'info') icon = 'fa-info-circle';
+
+      toast.innerHTML = `<i class="fas ${icon}" style="font-size:16px;"></i> <span>${msg}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
     }
 
     function switchTab(tabId, btn) {
@@ -433,27 +559,48 @@
       return cleanImg;
     }
 
-    // ---------------- ORDERS MANAGEMENT ----------------
+    // ---------------- ORDERS MANAGEMENT & TIME FILTER ----------------
     function listenToOrders() {
       database.ref('orders').on('value', (snapshot) => {
-        const data = snapshot.val();
-        const tbody = document.getElementById('orders-list-body');
-        
-        if(!data) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#888;">No orders found.</td></tr>';
-          document.getElementById('stat-orders').innerText = '0';
-          document.getElementById('stat-revenue').innerText = 'Rs. 0';
-          return;
+        allOrdersData = snapshot.val();
+        applyTimeFilter();
+      });
+    }
+
+    function applyTimeFilter() {
+      const tbody = document.getElementById('orders-list-body');
+      const filterValue = document.getElementById('timeFilter').value;
+
+      if(!allOrdersData) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#888;">No orders found.</td></tr>';
+        document.getElementById('stat-orders').innerText = '0';
+        document.getElementById('stat-revenue').innerText = 'Rs. 0';
+        return;
+      }
+
+      const now = new Date();
+      let filteredCount = 0;
+      let totalRevenue = 0;
+      let html = '';
+
+      const keys = Object.keys(allOrdersData);
+
+      keys.forEach(id => {
+        const order = allOrdersData[id];
+        const rawDate = order.date || order.createdAt;
+        const orderDate = rawDate ? new Date(rawDate) : null;
+
+        // Date Filter Logic
+        let includeOrder = true;
+        if (orderDate && !isNaN(orderDate.getTime())) {
+          const diffDays = (now - orderDate) / (1000 * 60 * 60 * 24);
+          if (filterValue === '7days' && diffDays > 7) includeOrder = false;
+          if (filterValue === '30days' && diffDays > 30) includeOrder = false;
+          if (filterValue === '6months' && diffDays > 180) includeOrder = false;
         }
 
-        const keys = Object.keys(data);
-        document.getElementById('stat-orders').innerText = keys.length;
-
-        let totalRevenue = 0;
-        let html = '';
-
-        keys.forEach(id => {
-          const order = data[id];
+        if (includeOrder) {
+          filteredCount++;
           const price = Number(order.totalAmount || order.totalPrice || order.total || 0);
           totalRevenue += price;
 
@@ -461,7 +608,6 @@
           let statusBadge = '';
           let actionBtn = '';
 
-          // DYNAMIC STATUS BADGES & ACTION BUTTONS
           if (status === 'Pending') {
             statusBadge = '<span class="status-badge status-pending">Pending</span>';
             actionBtn = `<button class="btn-action btn-accept" onclick="updateOrderStatus('${id}', 'Accepted')"><i class="fas fa-check"></i> Accept & Email</button>`;
@@ -487,11 +633,12 @@
               <td>${actionBtn}</td>
             </tr>
           `;
-        });
-
-        document.getElementById('stat-revenue').innerText = `Rs. ${totalRevenue}`;
-        tbody.innerHTML = html;
+        }
       });
+
+      document.getElementById('stat-orders').innerText = filteredCount;
+      document.getElementById('stat-revenue').innerText = `Rs. ${totalRevenue.toLocaleString()}`;
+      tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center; color:#888;">Is time period mein koi orders nahi hain.</td></tr>';
     }
 
     // UPDATE ORDER STATUS & TRIGGER DYNAMIC EMAIL TEMPLATES
@@ -502,22 +649,21 @@
         const name = order.customerName || order.name || "Valued Customer";
 
         if(!email || email === 'N/A' || email === '') {
-          alert("Is order ke sath Customer Email mojood nahi hai!");
+          showToast("Customer Email missing for this order!", "error");
           return;
         }
 
         database.ref('orders/' + orderId).update({ status: newStatus }).then(() => {
-          showToast(`Order status updated to ${newStatus}!`);
+          showToast(`Order status updated to ${newStatus}!`, "success");
 
-          // Set Template ID and Message dynamically based on status
           let templateId = '';
           let successMessage = '';
 
           if (newStatus === 'Accepted') {
-            templateId = 'template_2cjp05j'; // CONFIRMATION TEMPLATE
+            templateId = 'template_2cjp05j';
             successMessage = 'Confirmation Email sent to customer!';
           } else if (newStatus === 'Dispatched') {
-            templateId = 'template_6yu7c9m'; // DISPATCH TEMPLATE
+            templateId = 'template_6yu7c9m';
             successMessage = 'Dispatch Email sent to customer!';
           }
 
@@ -537,15 +683,14 @@
 
           emailjs.send('service_rb7q0hq', templateId, templateParams)
             .then(function(response) {
-               console.log('SUCCESS!', response.status, response.text);
-               showToast(successMessage);
+               showToast(successMessage, "info");
             }, function(error) {
                console.error("EmailJS Error:", error);
-               alert("Status update ho gaya hai, lekin Email bhejne me masla aaya. Console check karein.");
+               showToast("Status updated, but email sending failed.", "error");
             });
 
         }).catch(err => {
-          alert("Error updating order: " + err.message);
+          showToast("Error updating order: " + err.message, "error");
         });
       });
     }
@@ -566,9 +711,9 @@
         image: image,
         salesCount: 0
       }).then(() => {
-        showToast("Product Added Successfully!");
+        showToast("Product Added Successfully!", "success");
         document.getElementById('addProductForm').reset();
-      }).catch(err => alert("Error adding product: " + err.message));
+      }).catch(err => showToast("Error adding product: " + err.message, "error"));
     }
 
     function listenToProducts() {
@@ -618,7 +763,7 @@
 
     function deleteProduct(id) {
       if(confirm("Kya aap yeh product delete karna chahte hain?")) {
-        database.ref('products/' + id).remove().then(() => showToast("Product deleted!"));
+        database.ref('products/' + id).remove().then(() => showToast("Product deleted successfully!", "info"));
       }
     }
 

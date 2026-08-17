@@ -485,7 +485,7 @@
     <p style="grid-column: 1/-1; text-align: center;">Loading products...</p>
   </div>
 
-  <!-- SEE MORE BUTTON CONTAINER -->
+  <!-- SEE MORE BUTTON CONTAINER (Har 8 products k baad) -->
   <div class="see-more-container" id="seeMoreBtnContainer" style="display: none;">
     <button class="btn-see-more" onclick="loadMoreProducts()">See More Products ✨</button>
   </div>
@@ -501,11 +501,13 @@
       <h3>Customer Reviews</h3>
       <a href="review.html" class="btn-add-review">+ Write a Review</a>
     </div>
-    <div class="reviews-grid" id="reviews-container"></div>
+    <div class="reviews-grid" id="reviews-container">
+      <p style="grid-column: 1/-1; text-align: center; color: #888;">Loading reviews...</p>
+    </div>
   </div>
 
   <div class="support-section">
-    <h4>Need Help or Have a Complaint?</h4>
+    <h4>Need Help?</h4>
     <p>For order confirmation, payment receipts, or queries, send us a Direct Message on Instagram.</p>
     <a href="https://instagram.com/ayezling.shop" target="_blank" class="btn-support">
       <i class="fab fa-instagram"></i> Message Us on Instagram
@@ -536,27 +538,30 @@
     const database = firebase.database();
 
     let allProducts = [];
-    let currentLimit = 64;
+    let currentLimit = 8; // Pehle 8 products show honge
     let activeCategory = 'all';
     let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
 
+    // FIXED IMAGE PATH FUNCTION
     function getCleanImagePath(img) {
+      const fallback = 'https://via.placeholder.com/300x300?text=Ayezling+Jewellery';
       if (!img || img === "undefined" || img === "null") {
-        return 'https://via.placeholder.com/300x300?text=Ayezling+Jewellery';
+        return fallback;
       }
 
       let cleanImg = String(img).trim().replace(/\\/g, '/');
 
+      // Online URLs or Base64 Data
       if (cleanImg.startsWith('http://') || cleanImg.startsWith('https://') || cleanImg.startsWith('data:image')) {
         return cleanImg;
       }
 
-      if (cleanImg.includes('/')) {
-        cleanImg = cleanImg.split('/').pop();
+      // Local files
+      if (cleanImg.startsWith('/')) {
+        cleanImg = cleanImg.substring(1);
       }
 
-      const githubBase = 'https://raw.githubusercontent.com/70174157-glitch/ayezling/main/';
-      return githubBase + cleanImg;
+      return cleanImg;
     }
 
     function listenToProducts() {
@@ -608,6 +613,8 @@
       grid.innerHTML = visibleProducts.map(product => {
         const titleEscaped = (product.title || '').replace(/'/g, "\\'");
         const isBestSeller = (product.salesCount || 0) > 3 ? '<span class="best-seller-badge">✨ Best Seller</span>' : '';
+        
+        // Multi-field image fallback check
         const rawImg = product.image || product.imageUrl || product.img || product.photo || product.image_url;
         const imgPath = getCleanImagePath(rawImg);
 
@@ -641,7 +648,7 @@
     }
 
     function loadMoreProducts() {
-      currentLimit += 12;
+      currentLimit += 8; // Har click par 8 mazeed load honge
       renderProducts();
     }
 
@@ -650,6 +657,7 @@
       buttons.forEach(btn => btn.classList.remove('active'));
       btnElement.classList.add('active');
 
+      currentLimit = 8; // Category change par resetting to 8
       activeCategory = category;
       renderProducts();
     }
@@ -692,29 +700,33 @@
       window.location.href = 'cart.html';
     }
 
+    // REAL-TIME REVIEWS FETCH FROM FIREBASE DATABASE
     function loadReviews() {
-      const defaultReviews = [
-        { name: "Ayesha K.", rating: 5, comment: "Bohot pyari keychain hai! Quality is top notch and packaging was super cute ✨" },
-        { name: "Fatima R.", rating: 5, comment: "Loved the beaded bracelet, exact like picture. Will order again soon!" }
-      ];
-
-      let storedReviews = JSON.parse(localStorage.getItem('ayezling_reviews'));
-      
-      if (!storedReviews || storedReviews.length === 0) {
-        localStorage.setItem('ayezling_reviews', JSON.stringify(defaultReviews));
-        storedReviews = defaultReviews;
-      }
-
       const container = document.getElementById('reviews-container');
       if (!container) return;
 
-      container.innerHTML = storedReviews.map(r => `
-        <div class="review-card">
-          <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-          <p class="review-text">${r.comment}</p>
-          <span class="review-author">— ${r.name}</span>
-        </div>
-      `).join('');
+      database.ref('reviews').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const reviewsList = Object.keys(data).map(key => data[key]);
+          
+          // Latest reviews pehle show karne ke liye
+          reviewsList.reverse();
+
+          container.innerHTML = reviewsList.map(r => `
+            <div class="review-card">
+              <div class="review-stars">${'★'.repeat(r.rating || 5)}${'☆'.repeat(5 - (r.rating || 5))}</div>
+              <p class="review-text">${r.comment || ''}</p>
+              <span class="review-author">— ${r.name || 'Anonymous'}</span>
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">No reviews yet. Be the first to write one!</p>';
+        }
+      }, (error) => {
+        console.error("Reviews fetch error:", error);
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">Failed to load reviews.</p>';
+      });
     }
 
     window.onload = function() {

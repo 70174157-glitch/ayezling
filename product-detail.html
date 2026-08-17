@@ -57,7 +57,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 400px;
+      min-height: 380px;
+      overflow: hidden;
     }
 
     .product-img {
@@ -65,6 +66,7 @@
       max-height: 450px;
       object-fit: cover;
       border-radius: 12px;
+      display: block;
     }
 
     /* INFO SECTION */
@@ -195,7 +197,7 @@
   <main class="product-detail-container">
     <!-- LEFT SIDE: PRODUCT IMAGE -->
     <div class="image-card">
-      <img id="productImage" class="product-img" src="https://via.placeholder.com/400?text=Loading..." alt="Product Image">
+      <img id="productImage" class="product-img" src="" alt="Loading Product Image...">
     </div>
 
     <!-- RIGHT SIDE: PRODUCT DETAILS -->
@@ -240,17 +242,21 @@
     let currentQty = 1;
     let currentProduct = null;
 
-    // CLEAN IMAGE URL HELPER
+    // Zero-Fail Fallback SVG Image
+    const FALLBACK_SVG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><rect width="400" height="400" fill="%23f2e6eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="16" fill="%238C3B5B">No Image Available</text></svg>';
+
+    // IMAGE URL CLEANER
     function getCleanImagePath(img) {
-      const fallback = 'https://via.placeholder.com/400?text=No+Image';
-      if (!img) return fallback;
+      if (!img) return '';
+      let cleanImg = String(img).trim();
       
-      let cleanImg = String(img).trim().replace(/\\/g, '/');
-      
+      // Full web URLs (Firebase Storage / HTTPS)
       if (cleanImg.startsWith('http://') || cleanImg.startsWith('https://') || cleanImg.startsWith('data:image')) {
         return cleanImg;
       }
       
+      // Relative paths
+      cleanImg = cleanImg.replace(/\\/g, '/');
       if (cleanImg.startsWith('/')) cleanImg = cleanImg.substring(1);
       return cleanImg;
     }
@@ -264,13 +270,14 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // FETCH PRODUCT DETAILS FROM URL QUERY PARAMETER (?id=...)
+    // FETCH PRODUCT DETAILS FROM URL PARAMETER
     function loadProductDetails() {
       const urlParams = new URLSearchParams(window.location.search);
       const productId = urlParams.get('id');
 
       if (!productId) {
         document.getElementById('productTitle').innerText = "Product Not Found";
+        document.getElementById('productImage').src = FALLBACK_SVG;
         return;
       }
 
@@ -279,31 +286,40 @@
 
         if (!product) {
           document.getElementById('productTitle').innerText = "Product Not Found";
+          document.getElementById('productImage').src = FALLBACK_SVG;
           return;
         }
 
         currentProduct = { id: productId, ...product };
 
-        // SET UI DATA
+        // SET TEXT VALUES
         document.getElementById('productTitle').innerText = product.title || 'Product Details';
         document.getElementById('productCategory').innerText = product.category || 'JEWELLERY';
         document.getElementById('productPrice').innerText = `Rs. ${product.price || 0}`;
 
-        // FIX IMAGE URL LOGIC
-        const rawImg = product.image || product.imageUrl || product.img;
+        // GET IMAGE URL (Checks all possible keys)
+        const rawImg = product.image || product.imageUrl || product.img || product.photo || product.picture || '';
         const finalImgUrl = getCleanImagePath(rawImg);
-        
+
         const imgElem = document.getElementById('productImage');
-        imgElem.src = finalImgUrl;
         imgElem.alt = product.title || 'Product Image';
+
+        if (finalImgUrl) {
+          imgElem.src = finalImgUrl;
+        } else {
+          imgElem.src = FALLBACK_SVG;
+        }
+
         imgElem.onerror = function() {
-          this.onerror = null;
-          this.src = 'https://via.placeholder.com/400?text=Image+Not+Found';
+          console.warn("Failed to load image URL:", finalImgUrl);
+          this.onerror = null; // Prevent loop
+          this.src = FALLBACK_SVG;
         };
 
       }).catch((err) => {
         console.error("Error fetching product:", err);
         document.getElementById('productTitle').innerText = "Error loading product";
+        document.getElementById('productImage').src = FALLBACK_SVG;
       });
     }
 
@@ -320,6 +336,8 @@
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const existingIndex = cart.findIndex(item => item.id === currentProduct.id);
 
+      const rawImg = currentProduct.image || currentProduct.imageUrl || currentProduct.img || '';
+
       if (existingIndex > -1) {
         cart[existingIndex].quantity += currentQty;
       } else {
@@ -327,7 +345,7 @@
           id: currentProduct.id,
           title: currentProduct.title,
           price: currentProduct.price,
-          image: getCleanImagePath(currentProduct.image || currentProduct.imageUrl || currentProduct.img),
+          image: getCleanImagePath(rawImg),
           quantity: currentQty
         });
       }
