@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AYEZLING | Quick Add Products (Code Mode)</title>
+  <title>AYEZLING | Quick Add Products (Smart Loader)</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -82,120 +82,186 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-
-    // =========================================================================
-    // 🔴 🔴 🔴 ADD YOUR PRODUCTS BELOW BY CATEGORY 🔴 🔴 🔴
-    // =========================================================================
-    // Instructions:
-    // 1. Image path should be local (e.g., "images/bracelet1.jpeg") or full URL.
-    // 2. Categories must be one of: "bracelets", "charms", "keychains", "necklaces", "earrings".
-    // 3. Make sure to separate product blocks with commas (,).
-    
     const productsToAdd = [
 
-      // -----------------------------------------------------------------------
-      // CATEGORY 1: BRACELETS (category: "bracelets")
-      // -----------------------------------------------------------------------
-      {
-        title: "Couples Matching Bracelet",
-        price: 700,
-        category: "bracelets",
-        image: "images/bracelet1.jpeg"
-      },
-      {
-        title: "Cute Pearl Bracelet",
-        price: 500,
-        category: "bracelets",
-        image: "images/bracelet2.jpeg"
-      },
-      /* PASTE NEW BRACELETS HERE:
-      ,{
-        title: "Title Here",
-        price: 600,
-        category: "bracelets",
-        image: "images/bracelet3.jpeg"
-      }
-      */
+      // =========================================================================
+      // CATEGORY 1: CHARMS (Phone Charms & Straps)
+      // =========================================================================
+      { title: "Butterfly Pearl Charm", price: 450, category: "charms", image: "images/charm1.450.jpeg" },
+      { title: "Pearl Heart Bag Charm", price: 500, category: "charms", image: "images/charm2.500.jpeg" },
+      { title: "Purple Crystal Butterfly Charm", price: 500, category: "charms", image: "images/charm3.500.jpeg" },
+      { title: "Cute Penguin Bead Charm", price: 500, category: "charms", image: "images/charm4.500.jpeg" },
+      { title: "Duo Penguin Charms (Each)", price: 550, category: "charms", image: "images/charm5.550.jpeg" },
+      { title: "Elegance Pearl Phone Charm", price: 499, category: "charms", image: "images/charm6.499.jpeg" },
+      { title: "Classic Pearl Strap", price: 550, category: "charms", image: "images/charm7.550.jpeg" },
+      { title: "Pink Butterfly Hoop Charm", price: 499, category: "charms", image: "images/charm8.499.jpeg" },
+      { title: "Minimal Pink Crystal Charm", price: 450, category: "charms", image: "images/charm9.450.jpeg" },
+      { title: "Pearl Aesthetic Charm", price: 550, category: "charms", image: "images/charm10.550.jpeg" },
+      { title: "Delicate Beaded Charm", price: 550, category: "charms", image: "images/charm11.550.jpeg" },
+      { title: "Little Bird Charm", price: 550, category: "charms", image: "images/charm12.550.jpeg" },
+      { title: "Colorful Star Pearl Charm", price: 499, category: "charms", image: "images/charm13.499.jpeg" },
+      { title: "Bow Pearl Wrist Strap", price: 499, category: "charms", image: "images/charm14.499.jpeg" },
+      { title: "Chubby Chick Charm", price: 550, category: "charms", image: "images/charm15.550.jpeg" },
+      { title: "Butterfly Pink Drop Charm", price: 350, category: "charms", image: "images/charm16.350.jpeg" },
+      { title: "Gothic Heart Dangle Charm", price: 499, category: "charms", image: "images/charm17.499.jpeg" },
+      { title: "Pastel Beaded Phone Strap", price: 450, category: "charms", image: "images/charm18.450.jpeg" },
+      { title: "Crystal Butterfly Pink Charm", price: 499, category: "charms", image: "images/charm19.499.jpeg" },
+      { title: "Purple Crystal Heart Charm", price: 400, category: "charms", image: "images/charm20.400.jpeg" },
+      { title: "Monochrome Flower Charm", price: 450, category: "charms", image: "images/charm21.450.jpeg" },
+      { title: "Heart Pendant Charm", price: 400, category: "charms", image: "images/charm22.400.jpeg" },
+      { title: "Galaxy Beaded Charm", price: 550, category: "charms", image: "images/charm23.550.jpeg" },
+      { title: "Green Beaded Flower Charm", price: 550, category: "charms", image: "images/charm24.550.jpeg" },
+      { title: "Red Butterfly Dangle Charm", price: 400, category: "charms", image: "images/charm25.400.jpeg" },
+      { title: "Classy Pearl Phone Strap", price: 499, category: "charms", image: "images/charm26.499.jpeg" },
+      { title: "Pink Cherry Charm", price: 450, category: "charms", image: "images/charm27.450.jpeg" },
+      { title: "Handmade Kitty Bead Charm", price: 800, category: "charms", image: "images/charm28.800.jpeg" },
+      { title: "Pink Gemstone Charm", price: 400, category: "charms", image: "images/charm29.400.jpeg" },
+      { title: "Purple Butterfly Ring Charm", price: 499, category: "charms", image: "images/charm30.499.jpeg" },
+      { title: "Blue Penguin Bead Charm", price: 550, category: "charms", image: "images/charm31.550.jpeg" },
+      { title: "Cascading Heart Charm", price: 450, category: "charms", image: "images/charm32.450.jpeg" },
+      { title: "Yellow Butterfly Charm", price: 400, category: "charms", image: "images/charm33.400.jpeg" },
+      { title: "Pastel Charm Strap", price: 550, category: "charms", image: "images/charm34.550.jpeg" },
+      { title: "Twin Cherry Charm", price: 400, category: "charms", image: "images/charm35.400.jpeg" },
+      { title: "3D Spider-Man Bead Charm", price: 900, category: "charms", image: "images/charm36.900.jpeg" },
+      { title: "3D Character Crochet Charm", price: 800, category: "charms", image: "images/charm37.800.jpeg" },
+      { title: "White Pearl Bow Charm", price: 450, category: "charms", image: "images/charm38.450.jpeg" },
+      { title: "Cherry Dangle Charm", price: 400, category: "charms", image: "images/charm39.400.jpeg" },
+      { title: "Mini Strawberry Charm", price: 350, category: "charms", image: "images/charm40.350.jpeg" },
+      { title: "Pink Heart Crystal Charm", price: 350, category: "charms", image: "images/charm41.350.jpeg" },
+      { title: "Aesthetic Heart Dangle", price: 450, category: "charms", image: "images/charm42.450.jpeg" },
+      { title: "Green Butterfly Crystal Charm", price: 500, category: "charms", image: "images/charm43.500.jpeg" },
+      { title: "Pearl Bow Charms (Each)", price: 450, category: "charms", image: "images/charm44.450.jpeg" },
+      { title: "Aesthetic Beaded Charm", price: 450, category: "charms", image: "images/charm45.450.jpeg" },
+      { title: "Checkered & Bow Charms (Each)", price: 450, category: "charms", image: "images/charm46.450.jpeg" },
+      { title: "Hoop Butterfly Charms (Each)", price: 850, category: "charms", image: "images/charm47.850.jpeg" },
+      { title: "Elegance Ribbon Charm", price: 850, category: "charms", image: "images/charm48.850.jpeg" },
+      { title: "Soft Aesthetic Charm", price: 550, category: "charms", image: "images/charm50.450.jpeg" },
+      { title: "Pink Pearl Ribbon Charm", price: 450, category: "charms", image: "images/charm50.450.jpeg" },
+      { title: "Duo Crystal Charms (Each)", price: 450, category: "charms", image: "images/charm51.450.jpeg" },
+      { title: "Red & White Beaded Strap", price: 450, category: "charms", image: "images/charm52.450.jpeg" },
+      { title: "3D Purple Penguin Phone Charm", price: 0, category: "charms", image: "insertion 3/c1.jpeg" },
+      { title: "3D Avocado Beaded Phone Charm", price: 0, category: "charms", image: "insertion 3/c2.jpeg" },
+      { title: "Silver Bow & Cherry Phone Strap", price: 0, category: "charms", image: "insertion 3/c3.jpeg" },
+      { title: "Cute Beaded Chick Phone Charm", price: 0, category: "charms", image: "insertion 3/c4.jpeg" },
+      { title: "3D Classic Penguin Phone Charm", price: 0, category: "charms", image: "insertion 3/c5.jpeg" },
+      { title: "Pearl & Cherry Drop Phone Strap", price: 0, category: "charms", image: "insertion 3/c6.jpeg" },
+      { title: "Pastel Crystal Floral Phone Strap", price: 0, category: "charms", image: "insertion 3/c7.jpeg" },
+      { title: "Magenta Penguin Phone Charm", price: 0, category: "charms", image: "insertion 3/c8.jpeg" },
+      { title: "3D Cute Kitty Phone Charm", price: 0, category: "charms", image: "insertion 3/c9.jpeg" },
+      { title: "Dainty Cherry Heart Phone Strap", price: 0, category: "charms", image: "insertion 3/c10.jpeg" },
+      { title: "Hoop Charm Trio Phone Strap", price: 0, category: "charms", image: "insertion 3/c11.jpeg" },
+      { title: "Little Red Character Phone Charm", price: 0, category: "charms", image: "insertion 3/c12.jpeg" },
+      { title: "Pink Beaded Ribbon Bow Charm", price: 0, category: "charms", image: "insertion 3/c13.jpeg" },
+      { title: "Dual Mini Bird Phone Charms", price: 0, category: "charms", image: "insertion 3/c14.jpeg" },
+      { title: "Mini Animal Friends Phone Charm", price: 0, category: "charms", image: "insertion 3/c15.jpeg" },
+      { title: "Dual Jellyfish Octopus Charms", price: 0, category: "charms", image: "insertion 3/c16.jpeg" },
 
+      // =========================================================================
+      // CATEGORY 2: BRACELETS
+      // =========================================================================
+      { title: "Pearl Cherry Bracelet", price: 0, category: "bracelets", image: "bracelets/bracelet1.jpeg" },
+      { title: "Dual Pearl Bracelet Set", price: 0, category: "bracelets", image: "bracelets/bracelet2.jpeg" },
+      { title: "Pearl Cherry Accent Bracelet", price: 300, category: "bracelets", image: "bracelets/bracelet1.jpeg" },
+      { title: "Dual Pearl Elegance Stack", price: 350, category: "bracelets", image: "bracelets/bracelet2.jpeg" },
+      { title: "Sunflower Pearl Beaded Bracelet", price: 300, category: "bracelets", image: "bracelets/b3.300.jpeg" },
+      { title: "Neon Sunset Beaded Bracelet Set", price: 350, category: "bracelets", image: "bracelets/b4.350.jpeg" },
+      { title: "Tulip Pearl Charm Bracelet", price: 350, category: "bracelets", image: "bracelets/b6.350.jpeg" },
+      { title: "Pastel Rainbow Seed Bead Bracelet", price: 150, category: "bracelets", image: "bracelets/b7.150.jpeg" },
+      { title: "Aesthetic Pearl Charm Wristlet", price: 550, category: "bracelets", image: "bracelets/b8.550.jpeg" },
+      { title: "Turquoise & Onyx Beaded Stack", price: 400, category: "bracelets", image: "bracelets/b9.400.jpeg" },
+      { title: "Daisy Chain Beaded Bracelet", price: 300, category: "bracelets", image: "bracelets/b10.300.jpeg" },
+      { title: "Crystal Gemstone Beaded Bracelet", price: 350, category: "bracelets", image: "bracelets/b11.350.jpeg" },
+      { title: "Pink Frosted Letter Bead Bracelet", price: 350, category: "bracelets", image: "bracelets/b12.350.jpeg" },
+      { title: "Silver Star Pearl Bracelet", price: 350, category: "bracelets", image: "bracelets/b13.350.jpeg" },
+      { title: "Pink Crystal Heart Dangle Bracelet", price: 400, category: "bracelets", image: "bracelets/b14.400.jpeg" },
+      { title: "Blush Pink Layered Bracelet Stack", price: 450, category: "bracelets", image: "bracelets/b15.450.jpeg" },
+      { title: "Minimal Pink Beaded Strand", price: 300, category: "bracelets", image: "bracelets/b16.300.jpeg" },
+      { title: "Rose Quartz Silver Heart Bracelet", price: 400, category: "bracelets", image: "bracelets/b17.400.jpeg" },
+      { title: "Deep Crimson Twin Beaded Bracelet", price: 300, category: "bracelets", image: "bracelets/b18.300.jpeg" },
+      { title: "Purple Charm Dangle Bracelet", price: 400, category: "bracelets", image: "bracelets/b19.400.jpeg" },
+      { title: "Dual Contrast Seed Bead Set", price: 300, category: "bracelets", image: "bracelets/b20.300.jpeg" },
+      { title: "Minimalist Dainty Seed Bead Bracelet", price: 150, category: "bracelets", image: "bracelets/b21.150.jpeg" },
+      { title: "Black Star Pearl Chain Bracelet", price: 400, category: "bracelets", image: "bracelets/b22.400.jpeg" },
+      { title: "Confetti Rainbow Beaded Bracelet", price: 150, category: "bracelets", image: "bracelets/b23.150.jpeg" },
+      { title: "Duo Cord Friendship Bracelet Pair", price: 350, category: "bracelets", image: "bracelets/b24.350.jpeg" },
+      { title: "Rose Gold & Pink Pearl Stack", price: 550, category: "bracelets", image: "bracelets/b25.550.jpeg" },
+      { title: "Classic Dainty Pearl Bracelet", price: 150, category: "bracelets", image: "bracelets/b26.150.jpeg" },
+      { title: "Royal Blue Seed Bead Bracelet", price: 150, category: "bracelets", image: "bracelets/b27.150.jpeg" },
+      { title: "Sky Blue Daisy Chain Set", price: 350, category: "bracelets", image: "bracelets/b28.350.jpeg" },
+      { title: "Red Cherry Pearl Bracelet", price: 350, category: "bracelets", image: "bracelets/b29.350.jpeg" },
+      { title: "Chic Crystal Beaded Wristlet", price: 300, category: "bracelets", image: "bracelets/b30.300.jpeg" },
+      { title: "Ocean Breeze Seed Bead Bracelet", price: 150, category: "bracelets", image: "bracelets/b31.150.jpeg" },
+      { title: "Blossom Gemstone Pearl Bracelet", price: 400, category: "bracelets", image: "bracelets/b32.400.jpeg" },
+      { title: "Twin Cherry Pearl Strand Bracelet", price: 350, category: "bracelets", image: "bracelets/b33.350.jpeg" },
+      { title: "Bubblegum Pink Seed Bead Bracelet", price: 150, category: "bracelets", image: "bracelets/b34.150.jpeg" },
+      { title: "Yin Yang Magnetic Couple Set", price: 700, category: "bracelets", image: "bracelets/b35.700.jpeg" },
+      { title: "Smiley Rainbow Fun Beaded Bracelet", price: 150, category: "bracelets", image: "bracelets/b36.150.jpeg" },
+      { title: "Rose Gold Braided Cord Bracelet Set", price: 300, category: "bracelets", image: "bracelets/b37.300.jpeg" },
+      { title: "Aesthetic Beaded Charm Bracelet", price: 300, category: "bracelets", image: "bracelets/b38.300each.jpeg" },
+      { title: "Monochrome Pearl Elegance Bracelet", price: 450, category: "bracelets", image: "bracelets/b39.450.jpeg" },
+      { title: "Lavender Dream Beaded Bracelet", price: 350, category: "bracelets", image: "bracelets/b40.350.jpeg" },
+      { title: "Onyx & Howlite Matching Pair", price: 600, category: "bracelets", image: "bracelets/b41.600.jpeg" },
+      { title: "Lava Stone & Marble Couple Set", price: 600, category: "bracelets", image: "bracelets/b42.600.jpeg" },
+      { title: "Gothic Black Custom Letter Bracelet", price: 350, category: "bracelets", image: "bracelets/b43.350.jpeg" },
+      { title: "Cobalt Blue & White Layered Set", price: 400, category: "bracelets", image: "bracelets/b44.400.jpeg" },
+      { title: "Sage Green Daisy Beaded Stack", price: 350, category: "bracelets", image: "bracelets/b45.350.jpeg" },
+      { title: "Starry Night Blue & Yellow Bracelet", price: 200, category: "bracelets", image: "bracelets/b47.200.jpeg" },
+      { title: "Cherry Blossom Dainty Beaded Bracelet", price: 300, category: "bracelets", image: "bracelets/b48.300.jpeg" },
+      { title: "Hot Pink Floral Seed Bead Bracelet", price: 300, category: "bracelets", image: "bracelets/b49.300.jpeg" },
+      { title: "Botanical Pearl & Tulip Bracelet Set", price: 450, category: "bracelets", image: "bracelets/b50.450.jpeg" },
+      { title: "Prism Crystal Rainbow Drop Bracelet", price: 400, category: "bracelets", image: "bracelets/b51.400.jpeg" },
+      { title: "Pastel Rainbow Crystal Dangle Bracelet", price: 450, category: "bracelets", image: "bracelets/b52.450.jpeg" },
+      { title: "Twisted Ocean Butterfly Bracelet", price: 0, category: "bracelets", image: "insertion 3/b53.jpeg" },
+      { title: "Pastel Sunset Beaded Bracelet", price: 0, category: "bracelets", image: "insertion 3/b54.jpeg" },
+      { title: "Classic Pearl Tulip Bracelet", price: 0, category: "bracelets", image: "insertion 3/b55.jpeg" },
+      { title: "Elegance Pearl Beaded Bracelet", price: 0, category: "bracelets", image: "insertion 3/b56.jpeg" },
+      { title: "Cherry Garden Beaded Bracelet Set", price: 0, category: "bracelets", image: "insertion 3/b57.jpeg" },
+      { title: "Rainbow Pastel Beaded Bracelet", price: 0, category: "bracelets", image: "insertion 3/b58.jpeg" },
+      { title: "Golden Sunshine Beaded Bracelet Set", price: 0, category: "bracelets", image: "insertion 3/b59.jpeg" },
+      { title: "Dainty Cherry Vine Bracelet", price: 0, category: "bracelets", image: "insertion 3/b60.jpeg" },
+      { title: "Candy Pink Beaded Bracelet Set", price: 0, category: "bracelets", image: "insertion 3/b61.jpeg" },
 
-      // -----------------------------------------------------------------------
-      // CATEGORY 2: PHONE CHARMS (category: "charms")
-      // -----------------------------------------------------------------------
-      {
-        title: "Beaded Phone Charm",
-        price: 450,
-        category: "charms",
-        image: "images/charm1.jpeg"
-      },
-      /* PASTE NEW PHONE CHARMS HERE:
-      ,{
-        title: "Title Here",
-        price: 450,
-        category: "charms",
-        image: "images/phone-charm2.jpeg"
-      }
-      */
+      // =========================================================================
+      // CATEGORY 3: EARRINGS
+      // =========================================================================
+      { title: "Pearl Heart Earrings Set", price: 0, category: "earrings", image: "images/earrings1.jpeg" },
+      { title: "Handcrafted Dangle Earrings Collection", price: 0, category: "earrings", image: "images/earrings2.jpeg" },
+      { title: "Red Beaded Dragonfly Earrings", price: 0, category: "earrings", image: "images/earrings3.jpeg" },
 
+      // =========================================================================
+      // CATEGORY 4: KEYCHAINS
+      // =========================================================================
+      { title: "Spider Pendant Keychain", price: 0, category: "keychains", image: "images/keychain1.jpeg" },
+      { title: "Purple Crystal Butterfly Keychain", price: 0, category: "keychains", image: "images/keychain2.jpeg" },
+      { title: "Beaded Flower Bouquet Keychain Set", price: 0, category: "keychains", image: "images/keychain3.jpeg" },
+      { title: "Crystal Dangle Keychain (Each)", price: 0, category: "keychains", image: "images/keychain4.jpeg" },
+      { title: "Black Pearl Bow Keychain", price: 0, category: "keychains", image: "images/keychain5.jpeg" },
+      { title: "Purple Beaded Flower Keychain", price: 0, category: "keychains", image: "images/keychain6.jpeg" },
+      { title: "Pearl Bow Keychain", price: 0, category: "keychains", image: "images/keychain7.jpeg" },
+      { title: "Black Crystal Bow Keychain", price: 0, category: "keychains", image: "images/keychain8.jpeg" },
+      { title: "Yellow Aesthetic Chain Keychain", price: 0, category: "keychains", image: "images/keychain9.jpeg" },
+      { title: "White Pearl Bow Keychain", price: 0, category: "keychains", image: "images/keychain10.jpeg" },
+      { title: "Blue Flower & Bow Keychain", price: 0, category: "keychains", image: "images/keychain11.jpeg" },
+      { title: "Woven Pearl Heart Keychain", price: 0, category: "keychains", image: "images/keychain12.jpeg" },
+      { title: "Mini Pearl Bag Keychain (Each)", price: 0, category: "keychains", image: "images/keychain13.jpeg" },
 
-      // -----------------------------------------------------------------------
-      // CATEGORY 3: KEYCHAINS (category: "keychains")
-      // -----------------------------------------------------------------------
-      {
-        title: "Custom Crystal Keychain",
-        price: 350,
-        category: "keychains",
-        image: "images/keychain1.jpeg"
-      },
-      /* PASTE NEW KEYCHAINS HERE:
-      ,{
-        title: "Title Here",
-        price: 400,
-        category: "keychains",
-        image: "images/keychain2.jpeg"
-      }
-      */
-
-
-      // -----------------------------------------------------------------------
-      // CATEGORY 4: NECKLACES (category: "necklaces")
-      // -----------------------------------------------------------------------
-      {
-        title: "Aesthetic Pendant Necklace",
-        price: 850,
-        category: "necklaces",
-        image: "images/necklace1.jpeg"
-      },
-      /* PASTE NEW NECKLACES HERE:
-      ,{
-        title: "Title Here",
-        price: 900,
-        category: "necklaces",
-        image: "images/necklace2.jpeg"
-      }
-      */
-
-
-      // -----------------------------------------------------------------------
-      // CATEGORY 5: EARRINGS (category: "earrings")
-      // -----------------------------------------------------------------------
-      {
-        title: "Floral Dangle Earrings",
-        price: 400,
-        category: "earrings",
-        image: "images/earrings1.jpeg"
-      }
-      /* PASTE NEW EARRINGS HERE:
-      ,{
-        title: "Title Here",
-        price: 450,
-        category: "earrings",
-        image: "images/earrings2.jpeg"
-      }
-      */
+      // =========================================================================
+      // CATEGORY 5: NECKLACES
+      // =========================================================================
+      { title: "Red & White Beaded Choker", price: 0, category: "necklaces", image: "images/necklace1.jpeg" },
+      { title: "Red Pearl Heart Necklace", price: 0, category: "necklaces", image: "images/necklace2.jpeg" },
+      { title: "Smiley Flower Beaded Necklace", price: 0, category: "necklaces", image: "images/necklace3.jpeg" },
+      { title: "Black & Pearl Dual Layer Necklace", price: 0, category: "necklaces", image: "images/necklace4.jpeg" },
+      { title: "Chain & Pearl Aesthetic Necklace", price: 0, category: "necklaces", image: "images/necklace5.jpeg" },
+      { title: "Green & White Double Layer Necklace", price: 0, category: "necklaces", image: "images/necklace6.jpeg" },
+      { title: "Minimal Maroon Pearl Necklace", price: 0, category: "necklaces", image: "images/necklace7.jpeg" },
+      { title: "Black Beaded Heart Necklace", price: 0, category: "necklaces", image: "images/necklace8.jpeg" },
+      { title: "Pink Flower Necklace & Earrings Set", price: 0, category: "necklaces", image: "images/necklace9.jpeg" },
+      { title: "Pink Beaded Shell Pendant Necklace", price: 0, category: "necklaces", image: "images/necklace10.jpeg" },
+      { title: "Red Accent Pearl Choker", price: 0, category: "necklaces", image: "images/necklace11.jpeg" },
+      { title: "Cherry Beaded Necklace", price: 450, category: "necklaces", image: "images/necklace12.450.jpeg" }
 
     ];
-    // =========================================================================
-
 
     function logMsg(msg) {
       const logBox = document.getElementById('logBox');
@@ -203,34 +269,59 @@
       logBox.scrollTop = logBox.scrollHeight;
     }
 
-    function uploadProductsToFirebase() {
+    async function uploadProductsToFirebase() {
       if (!productsToAdd || productsToAdd.length === 0) {
         alert("No products found to upload!");
         return;
       }
 
-      document.getElementById('logBox').innerText = "Starting upload to Firebase...";
+      document.getElementById('logBox').innerText = "Checking existing products in Firebase database...";
 
-      let count = 0;
-      productsToAdd.forEach((prod) => {
-        const newRef = database.ref('products').push();
-        newRef.set({
-          title: prod.title,
-          price: prod.price,
-          category: prod.category || 'bracelets',
-          image: prod.image,
-          salesCount: 0
-        }).then(() => {
-          count++;
-          logMsg(`✅ [${count}/${productsToAdd.length}] Added (${prod.category}): ${prod.title}`);
-          if (count === productsToAdd.length) {
-            logMsg("\n🎉 All products uploaded successfully!");
-            alert("All Products Added Successfully!");
-          }
-        }).catch((err) => {
-          logMsg(`❌ Error adding ${prod.title}: ${err.message}`);
+      try {
+        // 1. Fetch existing products from Firebase
+        const snapshot = await database.ref('products').once('value');
+        const existingData = snapshot.val() || {};
+
+        // 2. Store existing image paths to detect duplicates
+        const existingImages = new Set();
+        Object.values(existingData).forEach(prod => {
+          if (prod && prod.image) existingImages.add(prod.image);
         });
-      });
+
+        logMsg(`🔍 Found ${existingImages.size} items already in Firebase.`);
+
+        // 3. Filter out products that are already in Firebase
+        const newProducts = productsToAdd.filter(prod => !existingImages.has(prod.image));
+
+        if (newProducts.length === 0) {
+          logMsg("\n⚠️ All products in this array already exist in Firebase! Zero new items added.");
+          alert("All products already exist in Firebase! No duplicates were created.");
+          return;
+        }
+
+        logMsg(`🚀 Found ${newProducts.length} new products to upload...\n`);
+
+        // 4. Upload only the NEW items
+        let count = 0;
+        for (let prod of newProducts) {
+          const newRef = database.ref('products').push();
+          await newRef.set({
+            title: prod.title,
+            price: prod.price,
+            category: prod.category || 'bracelets',
+            image: prod.image,
+            salesCount: 0
+          });
+          count++;
+          logMsg(`✅ [${count}/${newProducts.length}] Added (${prod.category}): ${prod.title}`);
+        }
+
+        logMsg("\n🎉 Upload complete! Duplicates skipped successfully.");
+        alert(`Successfully added ${count} new products! Duplicates were automatically skipped.`);
+
+      } catch (err) {
+        logMsg(`❌ Error: ${err.message}`);
+      }
     }
   </script>
 </body>
