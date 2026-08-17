@@ -485,7 +485,7 @@
     <p style="grid-column: 1/-1; text-align: center;">Loading products...</p>
   </div>
 
-  <!-- SEE MORE BUTTON CONTAINER (Har 8 products k baad) -->
+  <!-- SEE MORE BUTTON CONTAINER -->
   <div class="see-more-container" id="seeMoreBtnContainer" style="display: none;">
     <button class="btn-see-more" onclick="loadMoreProducts()">See More Products ✨</button>
   </div>
@@ -525,20 +525,20 @@
   <script>
     // FIREBASE CONFIGURATION
     const firebaseConfig = {
-  apiKey: "AIzaSyASgbdHr8Vc1EWaEVxZvZA9-TYbJnUfcws",
-  authDomain: "ayezling.firebaseapp.com",
-  databaseURL: "https://reviews-section-6250e-default-rtdb.firebaseio.com", // 👈 Screenshot wala URL yahan hona zaroori hai
-  projectId: "ayezling",
-  storageBucket: "ayezling.firebasestorage.app",
-  messagingSenderId: "178860148015",
-  appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
-};
+      apiKey: "AIzaSyASgbdHr8Vc1EWaEVxZvZA9-TYbJnUfcws",
+      authDomain: "ayezling.firebaseapp.com",
+      databaseURL: "https://ayezling-default-rtdb.firebaseio.com",
+      projectId: "ayezling",
+      storageBucket: "ayezling.firebasestorage.app",
+      messagingSenderId: "178860148015",
+      appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     let allProducts = [];
-    let currentLimit = 8; // Pehle 8 products show honge
+    let currentLimit = 8;
     let activeCategory = 'all';
     let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
 
@@ -551,12 +551,10 @@
 
       let cleanImg = String(img).trim().replace(/\\/g, '/');
 
-      // Online URLs or Base64 Data
       if (cleanImg.startsWith('http://') || cleanImg.startsWith('https://') || cleanImg.startsWith('data:image')) {
         return cleanImg;
       }
 
-      // Local files
       if (cleanImg.startsWith('/')) {
         cleanImg = cleanImg.substring(1);
       }
@@ -614,7 +612,6 @@
         const titleEscaped = (product.title || '').replace(/'/g, "\\'");
         const isBestSeller = (product.salesCount || 0) > 3 ? '<span class="best-seller-badge">✨ Best Seller</span>' : '';
         
-        // Multi-field image fallback check
         const rawImg = product.image || product.imageUrl || product.img || product.photo || product.image_url;
         const imgPath = getCleanImagePath(rawImg);
 
@@ -648,7 +645,7 @@
     }
 
     function loadMoreProducts() {
-      currentLimit += 8; // Har click par 8 mazeed load honge
+      currentLimit += 8;
       renderProducts();
     }
 
@@ -657,7 +654,7 @@
       buttons.forEach(btn => btn.classList.remove('active'));
       btnElement.classList.add('active');
 
-      currentLimit = 8; // Category change par resetting to 8
+      currentLimit = 8;
       activeCategory = category;
       renderProducts();
     }
@@ -700,7 +697,7 @@
       window.location.href = 'cart.html';
     }
 
-    // REAL-TIME REVIEWS FETCH FROM FIREBASE DATABASE
+    // REAL-TIME REVIEWS FETCH
     function loadReviews() {
       const container = document.getElementById('reviews-container');
       if (!container) return;
@@ -709,8 +706,6 @@
         const data = snapshot.val();
         if (data) {
           const reviewsList = Object.keys(data).map(key => data[key]);
-          
-          // Latest reviews pehle show karne ke liye
           reviewsList.reverse();
 
           container.innerHTML = reviewsList.map(r => `
