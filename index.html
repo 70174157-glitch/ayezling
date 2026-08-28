@@ -103,6 +103,92 @@
       font-weight: 500;
     }
 
+    /* CONTROLS (SEARCH & SORT FILTER) */
+    .controls-container {
+      max-width: 650px;
+      margin: 25px auto 10px;
+      padding: 0 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .search-bar-container {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-bar-container input {
+      width: 100%;
+      padding: 13px 45px 13px 22px;
+      border: 1px solid #e0d5da;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      background: #ffffff;
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 4px 15px rgba(140, 59, 91, 0.06);
+      transition: all 0.3s ease;
+    }
+
+    .search-bar-container input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 4px 18px rgba(140, 59, 91, 0.18);
+    }
+
+    .search-bar-container .search-icon {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .sort-container {
+      position: relative;
+      min-width: 175px;
+    }
+
+    .sort-select {
+      width: 100%;
+      padding: 13px 38px 13px 18px;
+      border: 1px solid #e0d5da;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      background: #ffffff;
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 4px 15px rgba(140, 59, 91, 0.06);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      transition: all 0.3s ease;
+    }
+
+    .sort-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 4px 18px rgba(140, 59, 91, 0.18);
+    }
+
+    .sort-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 12px;
+      pointer-events: none;
+    }
+
     /* PREMIUM FLOATING PILL TOAST UI */
     #custom-toast {
       position: fixed;
@@ -180,7 +266,7 @@
       justify-content: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin: 35px 20px 40px;
+      margin: 25px 20px 40px;
     }
 
     .cat-pill {
@@ -320,6 +406,8 @@
       .products-grid { grid-template-columns: repeat(1, 1fr); }
       header h1 { font-size: 55px; }
       .tagline-line { width: 25px; }
+      .controls-container { flex-direction: column; }
+      .search-bar-container, .sort-container { width: 100%; }
     }
 
     .custom-banner {
@@ -471,6 +559,28 @@
     </div>
   </header>
 
+  <!-- SEARCH & PRICE SORTING CONTROLS -->
+  <div class="controls-container">
+    <div class="search-bar-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search bracelets, charms, necklaces..." 
+        oninput="handleSearch(this.value)"
+      >
+      <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <div class="sort-container">
+      <select id="sortSelect" class="sort-select" onchange="handleSort(this.value)">
+        <option value="default">Sort by: Featured</option>
+        <option value="low-to-high">Price: Low to High</option>
+        <option value="high-to-low">Price: High to Low</option>
+      </select>
+      <i class="fas fa-chevron-down sort-icon"></i>
+    </div>
+  </div>
+
   <div class="category-filter-container">
     <button class="cat-pill active" onclick="filterProducts('all', this)">All Items</button>
     <button class="cat-pill" onclick="filterProducts('bracelets', this)">Bracelets</button>
@@ -540,6 +650,8 @@
     let allProducts = [];
     let currentLimit = 8;
     let activeCategory = 'all';
+    let searchQuery = '';
+    let sortOrder = 'default';
     let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
 
     // FIXED IMAGE PATH FUNCTION
@@ -590,18 +702,49 @@
       window.location.href = `product-detail.html?id=${id}`;
     }
 
+    // SEARCH INPUT HANDLER
+    function handleSearch(val) {
+      searchQuery = val.toLowerCase().trim();
+      currentLimit = 8;
+      renderProducts();
+    }
+
+    // PRICE SORT HANDLER
+    function handleSort(val) {
+      sortOrder = val;
+      renderProducts();
+    }
+
     function renderProducts() {
       const grid = document.getElementById('productsGrid');
       const seeMoreBtn = document.getElementById('seeMoreBtnContainer');
       if (!grid) return;
 
-      let filtered = allProducts;
+      let filtered = [...allProducts];
+
+      // 1. Filter by Category
       if (activeCategory !== 'all') {
-        filtered = allProducts.filter(p => p.category === activeCategory);
+        filtered = filtered.filter(p => p.category === activeCategory);
+      }
+
+      // 2. Filter by Search Term (Title or Category)
+      if (searchQuery !== '') {
+        filtered = filtered.filter(p => {
+          const titleMatch = (p.title || '').toLowerCase().includes(searchQuery);
+          const categoryMatch = (p.category || '').toLowerCase().includes(searchQuery);
+          return titleMatch || categoryMatch;
+        });
+      }
+
+      // 3. Sort by Price
+      if (sortOrder === 'low-to-high') {
+        filtered.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+      } else if (sortOrder === 'high-to-low') {
+        filtered.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
       }
 
       if (filtered.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">No products available right now.</p>';
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">No products match your criteria.</p>';
         if (seeMoreBtn) seeMoreBtn.style.display = 'none';
         return;
       }
