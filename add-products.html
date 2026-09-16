@@ -64,7 +64,6 @@
     <div class="status" id="logBox">Status: Ready...</div>
   </div>
 
-  <!-- Firebase Database SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -83,18 +82,21 @@
     const database = firebase.database();
 
     const productsToAdd = [
-
       // =========================================================================
       // CATEGORY 1: CHARMS (Phone Charms & Straps)
       // =========================================================================
-        { title: "", price: "", category: "charms", image: "insertion 4/c1.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c2.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c3.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c4.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c5.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c6.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c7.jpeg" },
-        { title: "", price: "", category: "charms", image: "insertion 4/c8.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c1.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c2.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c3.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c4.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c5.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c6.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c7.jpeg" },
+      { title: "", price: "", category: "charms", image: "insertion 4/c8.jpeg" },
+      { title: "charm1.jpeg", price: 0, category: "charms", image: "insertion 5/charm1.jpeg" },
+      { title: "charm2.jpeg", price: 0, category: "charms", image: "insertion 5/charm2.jpeg" },
+      { title: "charm3.jpeg", price: 0, category: "charms", image: "insertion 5/charm3.jpeg" },
+      { title: "charm4.jpeg", price: 0, category: "charms", image: "insertion 5/charm4.jpeg" },
       { title: "Butterfly Pearl Charm", price: 450, category: "charms", image: "images/charm1.450.jpeg" },
       { title: "Pearl Heart Bag Charm", price: 500, category: "charms", image: "images/charm2.500.jpeg" },
       { title: "Purple Crystal Butterfly Charm", price: 500, category: "charms", image: "images/charm3.500.jpeg" },
@@ -283,7 +285,6 @@
       { title: "Pink Beaded Shell Pendant Necklace", price: 0, category: "necklaces", image: "images/necklace10.jpeg" },
       { title: "Red Accent Pearl Choker", price: 0, category: "necklaces", image: "images/necklace11.jpeg" },
       { title: "Cherry Beaded Necklace", price: 450, category: "necklaces", image: "images/necklace12.450.jpeg" }
-
     ];
 
     function logMsg(msg) {
@@ -298,43 +299,91 @@
         return;
       }
 
-      document.getElementById('logBox').innerText = "Checking existing products in Firebase database...";
+      const logBox = document.getElementById('logBox');
+      logBox.innerText = "Checking existing products in Firebase database...";
 
       try {
         // 1. Fetch existing products from Firebase
         const snapshot = await database.ref('products').once('value');
         const existingData = snapshot.val() || {};
 
-        // 2. Store existing image paths to detect duplicates
+        const cleanPath = (str) => String(str || '').trim().toLowerCase().replace(/\\/g, '/');
+        const getFileName = (str) => cleanPath(str).split('/').pop();
+
         const existingImages = new Set();
+        const existingFileNames = new Set();
+        const existingTitles = new Set();
+
         Object.values(existingData).forEach(prod => {
-          if (prod && prod.image) existingImages.add(prod.image);
+          if (prod) {
+            if (prod.image) {
+              existingImages.add(cleanPath(prod.image));
+              existingFileNames.add(getFileName(prod.image));
+            }
+            if (prod.title) {
+              existingTitles.add(cleanPath(prod.title));
+            }
+          }
         });
 
-        logMsg(`🔍 Found ${existingImages.size} items already in Firebase.`);
+        logMsg(`🔍 Found ${Object.keys(existingData).length} items already in Firebase.`);
 
-        // 3. Filter out products that are already in Firebase
-        const newProducts = productsToAdd.filter(prod => !existingImages.has(prod.image));
+        // 2. Filter out empty title items & check duplicates
+        const seenInBatch = new Set();
+        const newProducts = [];
+        let skippedEmpty = 0;
+
+        for (let prod of productsToAdd) {
+          // Check 1: Skip if title or image is missing/empty
+          if (!prod.image || !prod.title || String(prod.title).trim() === "") {
+            skippedEmpty++;
+            continue;
+          }
+
+          const normImage = cleanPath(prod.image);
+          const fileName = getFileName(prod.image);
+          const normTitle = cleanPath(prod.title);
+
+          // Check 2: Check if Path, Filename OR Title already exists in Firebase or current batch
+          const isDuplicate = existingImages.has(normImage) ||
+                              existingFileNames.has(fileName) ||
+                              existingTitles.has(normTitle) ||
+                              seenInBatch.has(normImage) ||
+                              seenInBatch.has(normTitle);
+
+          if (!isDuplicate) {
+            seenInBatch.add(normImage);
+            seenInBatch.add(normTitle);
+            newProducts.push(prod);
+          }
+        }
+
+        if (skippedEmpty > 0) {
+          logMsg(`ℹ️ Auto-skipped ${skippedEmpty} empty/unnamed items.`);
+        }
 
         if (newProducts.length === 0) {
-          logMsg("\n⚠️ All products in this array already exist in Firebase! Zero new items added.");
+          logMsg("\n⚠️ All products in this array already exist in Firebase or are duplicates! Zero new items added.");
           alert("All products already exist in Firebase! No duplicates were created.");
           return;
         }
 
-        logMsg(`🚀 Found ${newProducts.length} new products to upload...\n`);
+        logMsg(`🚀 Found ${newProducts.length} new unique products to upload...\n`);
 
-        // 4. Upload only the NEW items
+        // 3. Save via Unique Safe Keys
         let count = 0;
         for (let prod of newProducts) {
-          const newRef = database.ref('products').push();
-          await newRef.set({
-            title: prod.title,
-            price: prod.price,
-            category: prod.category || 'bracelets',
+          const normImage = cleanPath(prod.image);
+          const uniqueKey = normImage.replace(/[^a-z0-9]/g, '_');
+
+          await database.ref('products/' + uniqueKey).set({
+            title: prod.title.trim(),
+            price: Number(prod.price) || 0,
+            category: prod.category || 'charms',
             image: prod.image,
             salesCount: 0
           });
+
           count++;
           logMsg(`✅ [${count}/${newProducts.length}] Added (${prod.category}): ${prod.title}`);
         }
