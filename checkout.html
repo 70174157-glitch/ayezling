@@ -271,7 +271,7 @@
 
       <div class="form-group">
         <label>WhatsApp / Phone Number *</label>
-        <input type="tel" id="cust-phone" placeholder="03XXXXXXXXX" required pattern="[0-9]{11}" title="Please enter valid 11-digit mobile number">
+        <input type="tel" id="cust-phone" placeholder="03XXXXXXXXX" required pattern="[0-9]{11}" title="Please enter a valid 11-digit mobile number">
       </div>
 
       <div class="form-group">
@@ -286,21 +286,21 @@
 
       <div class="payment-instructions">
         <strong>Payment Instructions:</strong><br>
-        Please send total amount via Nayapay to:
+        Please transfer the total amount via NayaPay to:
         <ul>
           <li><strong>Account Title:</strong> Aiza Butt</li>
-          <li><strong>Bank / Wallet:</strong> Nayapay</li>
-          <li><strong>Number:</strong> 03006400363</li>
+          <li><strong>Bank / Wallet:</strong> NayaPay</li>
+          <li><strong>Account Number:</strong> 03006400363</li>
         </ul>
         <div class="payment-instructions-footer">
-          • After sending the payment, please enter your Transaction ID (TID) below.<br>
-          • Once your order is confirmed, we will contact you via WhatsApp.
+          • After completing the transfer, please enter your Transaction ID (TID) / Reference Number below.<br>
+          • Once your payment is verified by our team, your order will be confirmed and processed.
         </div>
       </div>
 
       <div class="form-group" style="margin-top: 15px;">
         <label>Transaction ID (TID) / Ref Number *</label>
-        <input type="text" id="cust-tid" placeholder="11-12 Digits Code (e.g. 84920184729)" required minlength="6">
+        <input type="text" id="cust-tid" placeholder="Enter 11-12 digit code (e.g. 84920184729)" required minlength="6">
       </div>
 
       <button type="submit" id="submit-btn" class="btn-submit">Confirm Order</button>
@@ -312,7 +312,7 @@
   <div class="modal-overlay" id="minOrderModal">
     <div class="modal-card">
       <div class="modal-icon"><i class="fas fa-shopping-bag"></i></div>
-      <div class="modal-title">Minimum Order PKR 1,000</div>
+      <div class="modal-title">Minimum Order Requirement</div>
       <div class="modal-msg" id="modalMsg"></div>
       <button class="btn-modal" onclick="closeModalAndRedirect()">ADD MORE ITEMS</button>
     </div>
@@ -321,7 +321,6 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <script>
     // MATCHED EXACTLY WITH ADMIN PANEL FIREBASE CONFIG
@@ -337,10 +336,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-
-    (function() {
-        emailjs.init("JGuyU6ywueHNdbnwS");
-    })();
 
     let lastOrderID = localStorage.getItem('ayezling_last_order_id') || 1000;
     let currentOrderID = parseInt(lastOrderID) + 1;
@@ -387,8 +382,8 @@
     if (totalPrice < 1000) {
       let remaining = 1000 - totalPrice;
       document.getElementById('modalMsg').innerHTML = `
-        Minimum total bill requirement is <b>PKR 1,000</b> (including PKR 200 delivery fee).<br><br>
-        Your current total bill is <b>PKR ${totalPrice}</b>. Please add <b>PKR ${remaining}</b> more worth of items to proceed!
+        The minimum order requirement is <b>PKR 1,000</b> (including PKR 200 delivery fee).<br><br>
+        Your current total bill is <b>PKR ${totalPrice}</b>. Please add items worth <b>PKR ${remaining}</b> more to proceed!
       `;
       document.getElementById('minOrderModal').classList.add('active');
     }
@@ -449,41 +444,15 @@
       const newOrderRef = database.ref('orders').push();
       newOrderRef.set(orderData)
         .then(() => {
-          sendOrderConfirmation(orderData);
+          // DIRECT REDIRECT (NO AUTOMATIC EMAIL)
           localStorage.setItem('ayezling_last_order_id', currentOrderID);
           localStorage.removeItem('ayezling_cart');
-          setTimeout(() => {
-            window.location.href = `order-success.html?orderId=${currentOrderID}`;
-          }, 800);
+          window.location.href = `order-success.html?orderId=${currentOrderID}`;
         })
         .catch((error) => {
           alert("Error placing order: " + error.message);
           btn.innerText = "Confirm Order";
           btn.disabled = false;
-        });
-    }
-
-    function sendOrderConfirmation(orderData) {
-      const templateParams = {
-        to_email: orderData.customerEmail,
-        email: orderData.customerEmail,
-        to_name: orderData.customerName,
-        order_id: orderData.orderRef,
-        name: itemName,
-        units: totalUnits.toString(),
-        price: orderData.subtotal.toString(),
-        cost: {
-          shipping: orderData.deliveryFee.toString(),
-          tax: "0",
-          total: orderData.totalAmount.toString()
-        }
-      };
-
-      emailjs.send('service_rb7q0hq', 'template_2cjp05j', templateParams)
-        .then(function(response) {
-          console.log('Order Email Sent Successfully!', response.status, response.text);
-        }, function(error) {
-          console.log('Failed to send email...', error);
         });
     }
   </script>
