@@ -213,7 +213,7 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(-20px);
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     #custom-toast.show {
@@ -331,7 +331,7 @@
       padding: 5px 12px;
       border-radius: 20px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       box-shadow: 0 4px 12px rgba(140, 59, 91, 0.25);
       z-index: 2;
     }
@@ -576,7 +576,7 @@
 
     <div class="sort-container">
       <select id="sortSelect" class="sort-select" onchange="handleSort(this.value)">
-        <option value="default">Sort by: Featured</option>
+        <option value="latest">Latest Added</option>
         <option value="low-to-high">Price: Low to High</option>
         <option value="high-to-low">Price: High to Low</option>
       </select>
@@ -600,7 +600,7 @@
 
   <!-- SEE MORE BUTTON CONTAINER -->
   <div class="see-more-container" id="seeMoreBtnContainer" style="display: none;">
-    <button class="btn-see-more" onclick="loadMoreProducts()">See More Products ✨</button>
+    <button class="btn-see-more" onclick="loadMoreProducts()">See More Products</button>
   </div>
 
   <div class="custom-banner">
@@ -654,7 +654,7 @@
     let currentLimit = 8;
     let activeCategory = 'all';
     let searchQuery = '';
-    let sortOrder = 'default';
+    let sortOrder = 'latest';
     let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
 
     // FIXED IMAGE PATH FUNCTION
@@ -739,11 +739,19 @@
         });
       }
 
-      // 3. Sort by Price
+      // 3. Sort Logic
       if (sortOrder === 'low-to-high') {
         filtered.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
       } else if (sortOrder === 'high-to-low') {
         filtered.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
+      } else {
+        // Default: Latest Added Products First (Firebase Push Keys / Timestamp Order Descending)
+        filtered.sort((a, b) => {
+          const timeA = a.createdAt || a.timestamp || 0;
+          const timeB = b.createdAt || b.timestamp || 0;
+          if (timeA && timeB) return timeB - timeA;
+          return b.id.localeCompare(a.id);
+        });
       }
 
       if (filtered.length === 0) {
@@ -756,7 +764,9 @@
 
       grid.innerHTML = visibleProducts.map(product => {
         const titleEscaped = (product.title || '').replace(/'/g, "\\'");
-        const isBestSeller = (product.salesCount || 0) > 3 ? '<span class="best-seller-badge">✨ Best Seller</span>' : '';
+        
+        // Clean BEST SELLER badge without emojis
+        const isBestSeller = (product.salesCount || 0) > 3 || product.isBestSeller ? '<span class="best-seller-badge">BEST SELLER</span>' : '';
         
         const rawImg = product.image || product.imageUrl || product.img || product.photo || product.image_url;
         const imgPath = getCleanImagePath(rawImg);
