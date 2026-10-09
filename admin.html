@@ -103,9 +103,7 @@
       transition: background 0.2s;
     }
 
-    .btn-login:hover {
-      background: #732f4a;
-    }
+    .btn-login:hover { background: #732f4a; }
 
     .login-error {
       color: #e74c3c;
@@ -643,6 +641,41 @@
     </div>
   </div>
 
+  <!-- ADD PROMO CODE MODAL -->
+  <div id="addPromoModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Promo Code</h3>
+        <span class="close-modal" onclick="closeAddPromoModal()">&times;</span>
+      </div>
+      <form id="addPromoForm" onsubmit="saveNewPromo(event)">
+        <div class="form-group-modal">
+          <label>Promo Code (e.g. AYEZ10)</label>
+          <input type="text" id="promoCodeInput" placeholder="e.g. FIRST10" style="text-transform:uppercase;" required>
+        </div>
+        <div class="form-group-modal">
+          <label>Discount Type</label>
+          <select id="promoTypeInput" required>
+            <option value="percentage">Percentage (%) Discount</option>
+            <option value="flat">Flat Amount (Rs.) Discount</option>
+          </select>
+        </div>
+        <div class="form-group-modal">
+          <label>Discount Value (% or Rs.)</label>
+          <input type="number" id="promoValueInput" placeholder="e.g. 10 for 10% OR 100 for Rs.100" required>
+        </div>
+        <div class="form-group-modal">
+          <label>Minimum Order Amount (Rs.)</label>
+          <input type="number" id="promoMinOrderInput" placeholder="e.g. 500 (0 for no limit)" value="0" required>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button type="submit" class="btn-action btn-accept" style="flex:1; justify-content:center; padding:10px;">Save Promo</button>
+          <button type="button" class="btn-action" style="background:#888; color:#fff; padding:10px 20px;" onclick="closeAddPromoModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MAIN ADMIN DASHBOARD -->
   <div class="admin-layout" id="adminDashboard">
     
@@ -654,6 +687,9 @@
         </button>
         <button class="sidebar-btn" onclick="switchTab('products-tab', this)">
           <i class="fas fa-gem"></i> Manage Products
+        </button>
+        <button class="sidebar-btn" onclick="switchTab('promos-tab', this)">
+          <i class="fas fa-ticket-alt"></i> Promo Codes
         </button>
         <button class="sidebar-btn btn-logout" onclick="handleLogout()">
           <i class="fas fa-sign-out-alt"></i> Logout
@@ -770,6 +806,33 @@
         </div>
       </div>
 
+      <!-- SECTION 3: MANAGE PROMO CODES -->
+      <div id="promos-tab" class="panel-section">
+        <div class="section-header-row">
+          <h2>Manage Promo Codes</h2>
+          <button class="btn-action btn-accept" style="padding: 10px 18px; font-size: 13px;" onclick="openAddPromoModal()">
+            <i class="fas fa-plus"></i> Add Promo Code
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Promo Code</th>
+                <th>Discount Type</th>
+                <th>Discount Value</th>
+                <th>Min Order Required</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="promos-list-body">
+              <tr><td colspan="5" style="text-align:center;">Loading promo codes...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -797,6 +860,7 @@
 
     let allOrdersData = null;
     let allProductsData = null;
+    let allPromosData = null;
     let currentCategoryFilter = 'all';
     let uploadedImageBase64 = '';
 
@@ -812,12 +876,14 @@
         showToast("Welcome Back", "Successfully authenticated.", "success");
         listenToOrders();
         listenToProducts();
+        listenToPromos();
       } else {
         loginScreen.style.display = 'flex';
         adminDashboard.style.display = 'none';
 
         database.ref('orders').off();
         database.ref('products').off();
+        database.ref('promos').off();
       }
     });
 
@@ -1128,7 +1194,6 @@
       tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center; color:#888;">No products in this category.</td></tr>';
     }
 
-    // ADD PRODUCT FUNCTIONS
     function openAddModal() {
       uploadedImageBase64 = '';
       document.getElementById('addProductForm').reset();
@@ -1174,7 +1239,6 @@
       });
     }
 
-    // EDIT & DELETE PRODUCT
     function openEditModal(id) {
       if (!allProductsData || !allProductsData[id]) return;
       const p = allProductsData[id];
@@ -1215,6 +1279,83 @@
       if (confirm("Are you sure you want to delete this product?")) {
         database.ref('products/' + id).remove().then(() => {
           showToast("Deleted", "Product deleted successfully.", "info");
+        });
+      }
+    }
+
+    // PROMO CODES MANAGEMENT
+    function listenToPromos() {
+      database.ref('promos').on('value', (snapshot) => {
+        allPromosData = snapshot.val();
+        renderPromosList();
+      });
+    }
+
+    function renderPromosList() {
+      const tbody = document.getElementById('promos-list-body');
+      if (!tbody) return;
+
+      if (!allPromosData) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No active promo codes found.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      Object.keys(allPromosData).forEach(id => {
+        const p = allPromosData[id];
+        const typeLabel = p.type === 'percentage' ? `${p.value}% OFF` : `Rs. ${p.value} OFF`;
+
+        html += `
+          <tr>
+            <td><strong style="color:var(--primary); letter-spacing:1px;">${p.code}</strong></td>
+            <td style="text-transform:capitalize;">${p.type}</td>
+            <td>${typeLabel}</td>
+            <td>Rs. ${p.minOrder || 0}</td>
+            <td>
+              <button class="btn-action btn-delete" onclick="deletePromo('${id}')"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function openAddPromoModal() {
+      document.getElementById('addPromoForm').reset();
+      document.getElementById('addPromoModal').classList.add('active');
+    }
+
+    function closeAddPromoModal() {
+      document.getElementById('addPromoModal').classList.remove('active');
+    }
+
+    function saveNewPromo(e) {
+      e.preventDefault();
+      const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+      const type = document.getElementById('promoTypeInput').value;
+      const value = Number(document.getElementById('promoValueInput').value);
+      const minOrder = Number(document.getElementById('promoMinOrderInput').value);
+
+      const newRef = database.ref('promos').push();
+      newRef.set({
+        code: code,
+        type: type,
+        value: value,
+        minOrder: minOrder,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      }).then(() => {
+        showToast("Promo Added", "New promo code created successfully.", "success");
+        closeAddPromoModal();
+      }).catch(err => {
+        showToast("Error", err.message, "error");
+      });
+    }
+
+    function deletePromo(id) {
+      if (confirm("Are you sure you want to delete this promo code?")) {
+        database.ref('promos/' + id).remove().then(() => {
+          showToast("Deleted", "Promo code removed.", "info");
         });
       }
     }

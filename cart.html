@@ -3,106 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Cart | AYEZLING</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Your Shopping Bag | AYEZLING</title>
+
+  <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    :root { 
-      --primary: #8C3B5B; 
-      --bg: #FAF8F5; 
-      --card-bg: #FFFFFF; 
+    :root {
+      --primary: #8C3B5B;
+      --bg: #FAF8F5;
+      --card-bg: #FFFFFF;
       --text: #333333;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); padding: 30px 20px 50px; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-    .cart-container { 
-      max-width: 520px; 
-      margin: 0 auto; 
-      background: var(--card-bg); 
-      padding: 30px 25px; 
-      border-radius: 20px; 
-      box-shadow: 0 8px 25px rgba(0,0,0,0.04); 
+    .cart-container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 620px;
+      border-radius: 24px;
+      padding: 35px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       border: 1px solid #f2e6eb;
     }
 
-    .cart-header {
+    .cart-header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
-    .back-btn {
+    .back-link {
       color: var(--primary);
       text-decoration: none;
       font-size: 13px;
       font-weight: 600;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: transform 0.2s;
     }
 
-    .back-btn:hover { transform: translateX(-3px); }
-
-    h2 { 
-      color: var(--primary); 
-      font-family: 'Cormorant Garamond', serif; 
-      font-size: 32px; 
-    }
-
-    .btn-clear-all {
-      background: transparent;
+    .clear-btn {
+      background: none;
       border: none;
-      color: #cc4444;
+      color: #c0392b;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      gap: 5px;
+    }
+
+    .cart-title {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 38px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .cart-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #f2e6eb;
+      gap: 15px;
+    }
+
+    .cart-item-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .cart-item-img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #f9f9f9;
+      border: 1px solid #f0e6ea;
+      flex-shrink: 0;
+    }
+
+    .cart-item-details {
+      display: flex;
+      flex-direction: column;
       gap: 4px;
     }
 
-    /* PRODUCT ITEM STYLING */
-    .cart-item { 
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between; 
-      border-bottom: 1px solid #f2e6eb; 
-      padding: 16px 0; 
-      gap: 12px;
+    .cart-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
     }
 
-    .item-left { display: flex; align-items: center; gap: 15px; flex: 1; }
-    
-    .item-img { 
-      width: 70px; 
-      height: 70px; 
-      object-fit: cover; 
-      border-radius: 12px; 
-      border: 1px solid #f2e6eb; 
-      background: #f9f9f9;
+    .cart-item-price {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 600;
     }
 
-    .item-details { display: flex; flex-direction: column; gap: 4px; }
-    .item-title { font-size: 14px; font-weight: 600; color: #333; }
-    .item-price { font-size: 13px; color: var(--primary); font-weight: 600; }
-    
-    /* QUANTITY CONTROLS */
-    .qty-controls {
+    .cart-item-right {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: #FAF8F5;
-      padding: 4px 10px;
+      gap: 15px;
+    }
+
+    .quantity-control {
+      display: inline-flex;
+      align-items: center;
+      background: #f8f2f4;
       border-radius: 20px;
-      border: 1px solid #eee;
+      padding: 4px 10px;
+      gap: 10px;
     }
 
     .qty-btn {
-      background: transparent;
+      background: none;
       border: none;
       color: var(--primary);
       font-size: 14px;
@@ -115,234 +158,650 @@
       justify-content: center;
     }
 
-    .qty-number { font-size: 13px; font-weight: 600; color: #333; }
+    .qty-val {
+      font-size: 13px;
+      font-weight: 600;
+    }
 
-    .remove-btn { 
-      color: #d9534f; 
-      cursor: pointer; 
-      font-size: 14px; 
+    .delete-item-btn {
+      background: none;
+      border: none;
+      color: #d9534f;
+      cursor: pointer;
+      font-size: 14px;
       padding: 5px;
       transition: color 0.2s;
     }
 
-    .remove-btn:hover { color: #a94442; }
-
-    .total-box { 
-      margin-top: 25px; 
-      padding-top: 18px; 
-      border-top: 2px solid #f2e6eb; 
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .delete-item-btn:hover {
+      color: #c9302c;
     }
 
-    .total-label { font-size: 15px; font-weight: 600; color: #555; }
-    .total-price { font-size: 22px; font-weight: 700; color: var(--primary); }
+    /* PROMO CODE SECTION */
+    .promo-section {
+      margin-top: 25px;
+      padding: 18px 20px;
+      background: #FAF5F7;
+      border: 1px dashed #E5C3D1;
+      border-radius: 16px;
+    }
 
-    .btn-checkout { 
-      display: block; 
-      width: 100%; 
-      background: var(--primary); 
-      color: white; 
-      padding: 15px; 
-      border-radius: 30px; 
-      text-align: center; 
-      text-decoration: none; 
-      font-weight: 600; 
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      margin-top: 20px; 
-      box-shadow: 0 4px 15px rgba(140, 59, 91, 0.25);
+    .promo-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .promo-input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .promo-input-group input {
+      flex: 1;
+      padding: 11px 16px;
+      border: 1px solid #E0D5DA;
+      border-radius: 25px;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      text-transform: uppercase;
+      background: #FFFFFF;
+    }
+
+    .promo-input-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-apply-promo {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 25px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
       transition: opacity 0.2s;
     }
 
-    .btn-checkout:hover { opacity: 0.95; }
+    .btn-apply-promo:hover {
+      opacity: 0.9;
+    }
+
+    .promo-msg {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .promo-msg.success {
+      color: #27ae60;
+      display: block;
+    }
+
+    .promo-msg.error {
+      color: #e74c3c;
+      display: block;
+    }
+
+    .applied-promo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #E8F8F0;
+      color: #27ae60;
+      border: 1px solid #A3E4D7;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .btn-remove-promo {
+      background: none;
+      border: none;
+      color: #e74c3c;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    .cart-footer {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px solid #f2e6eb;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .summary-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .summary-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .discount-value {
+      color: #27ae60;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px dashed #f2e6eb;
+      margin-bottom: 25px;
+    }
+
+    .total-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .total-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .btn-checkout:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+    }
 
     .empty-cart-msg {
       text-align: center;
       padding: 40px 10px;
+      color: #777;
     }
 
     .empty-cart-msg i {
-      font-size: 45px;
-      color: #e0d0d8;
-      margin-bottom: 15px;
+      font-size: 40px;
+      color: var(--primary);
+      margin-bottom: 12px;
+      opacity: 0.6;
     }
 
     .empty-cart-msg p {
-      font-size: 15px;
-      color: #777;
+      font-size: 14px;
       margin-bottom: 20px;
     }
 
-    .btn-shop-now {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 10px 25px;
-      border-radius: 25px;
-      text-decoration: none;
+    /* CUSTOM THEMED CONFIRMATION MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      padding: 28px;
+      border-radius: 20px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(140, 59, 91, 0.15);
+      border: 1px solid #f2e6eb;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.show .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--primary);
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .modal-card p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-modal-cancel {
+      flex: 1;
+      background: #f8f2f4;
+      color: #555;
+      border: none;
+      padding: 12px;
+      border-radius: 30px;
       font-size: 13px;
       font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-modal-cancel:hover {
+      background: #ebdce2;
+    }
+
+    .btn-modal-confirm {
+      flex: 1;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-modal-confirm:hover {
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
 
-<div class="cart-container">
-  <div class="cart-header">
-    <a href="index.html" class="back-btn">
-      <i class="fas fa-arrow-left"></i> Continue Shopping
-    </a>
-    <button class="btn-clear-all" id="btnClearAll" onclick="clearCart()" style="display: none;">
-      <i class="fas fa-trash-alt"></i> Clear All
-    </button>
-  </div>
-
-  <h2>Your Shopping Bag</h2>
-
-  <div id="cart-items"></div>
-
-  <div id="total-section" style="display: none;">
-    <div class="total-box">
-      <span class="total-label">Subtotal</span>
-      <span class="total-price" id="total-amount">Rs. 0</span>
+  <div class="cart-container">
+    <div class="cart-header-top">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Continue Shopping
+      </a>
+      <button class="clear-btn" id="clearAllBtn" onclick="clearCart()">
+        <i class="fas fa-trash-alt"></i> Clear All
+      </button>
     </div>
-    <a href="checkout.html" class="btn-checkout">Proceed to Checkout</a>
+
+    <h2 class="cart-title">Your Shopping Bag</h2>
+
+    <div class="cart-items-list" id="cartItemsList">
+      <!-- Dynamically populated -->
+    </div>
+
+    <!-- PROMO CODE INPUT BOX -->
+    <div class="promo-section" id="promoSection" style="display: none;">
+      <div class="promo-title">
+        <i class="fas fa-ticket-alt"></i> Have a Promo Code?
+      </div>
+      <div class="promo-input-group" id="promoInputContainer">
+        <input type="text" id="promoCodeInput" placeholder="Enter Code (e.g. AYEZ10)">
+        <button class="btn-apply-promo" onclick="applyPromoCode()">Apply</button>
+      </div>
+      <div id="promoMsg" class="promo-msg"></div>
+      <div id="appliedPromoBadge" style="display: none;"></div>
+    </div>
+
+    <div class="cart-footer" id="cartFooter">
+      <div class="summary-row">
+        <span class="summary-label">Subtotal</span>
+        <span class="summary-value" id="subtotalAmount">Rs. 0</span>
+      </div>
+      <div class="summary-row" id="discountRow" style="display: none;">
+        <span class="summary-label">Discount Applied</span>
+        <span class="summary-value discount-value" id="discountAmount">- Rs. 0</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">Total Amount</span>
+        <span class="total-amount" id="finalTotalAmount">Rs. 0</span>
+      </div>
+      <button class="btn-checkout" onclick="proceedToCheckout()">Proceed to Checkout</button>
+    </div>
   </div>
-</div>
 
-<script>
-  let rawCart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
+  <!-- CUSTOM THEMED CONFIRMATION MODAL -->
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal-card">
+      <h3>Clear Shopping Bag?</h3>
+      <p>Are you sure you want to remove all items from your cart?</p>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeConfirmModal()">Cancel</button>
+        <button class="btn-modal-confirm" onclick="confirmClearCart()">Clear All</button>
+      </div>
+    </div>
+  </div>
 
-  // Helper to ensure image path accuracy
-  function getCleanImagePath(img) {
-    if (!img) return 'https://via.placeholder.com/150?text=Ayezling';
-    if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:image')) {
-      return img;
+  <!-- Firebase Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // FIREBASE CONFIGURATION
+    const firebaseConfig = {
+      apiKey: "AIzaSyASgbdHr8Vc1EWaEVxZvZA9-TYbJnUfcws",
+      authDomain: "ayezling.firebaseapp.com",
+      databaseURL: "https://ayezling-default-rtdb.firebaseio.com",
+      projectId: "ayezling",
+      storageBucket: "ayezling.firebasestorage.app",
+      messagingSenderId: "178860148015",
+      appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
-    if (img.startsWith('images/') || img.startsWith('./')) {
-      return img;
-    }
-    return 'images/' + img;
-  }
+    const database = firebase.database();
 
-  // Aggregate cart array to handle item quantities
-  function getGroupedCart() {
-    const map = new Map();
+    let cart = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
+    let appliedPromo = JSON.parse(localStorage.getItem('ayezling_applied_promo')) || null;
+    let currentSubtotal = 0;
+    let currentDiscount = 0;
 
-    rawCart.forEach(item => {
-      const key = item.title;
-      if (map.has(key)) {
-        const existing = map.get(key);
-        existing.quantity += (item.quantity || 1);
-      } else {
-        map.set(key, {
-          title: item.title,
-          price: Number(item.price || 0),
-          image: item.image,
-          quantity: item.quantity || 1
-        });
+    function getCleanImagePath(img) {
+      const fallback = 'https://via.placeholder.com/300x300?text=Ayezling+Jewellery';
+      if (!img || img === "undefined" || img === "null") {
+        return fallback;
       }
-    });
 
-    return Array.from(map.values());
-  }
+      let cleanImg = String(img).trim().replace(/\\/g, '/');
 
-  function renderCart() {
-    const container = document.getElementById('cart-items');
-    const totalSection = document.getElementById('total-section');
-    const totalDisplay = document.getElementById('total-amount');
-    const btnClearAll = document.getElementById('btnClearAll');
+      if (cleanImg.startsWith('http://') || cleanImg.startsWith('https://') || cleanImg.startsWith('data:image')) {
+        return cleanImg;
+      }
 
-    const groupedCart = getGroupedCart();
+      if (cleanImg.startsWith('/')) {
+        cleanImg = cleanImg.substring(1);
+      }
 
-    if (groupedCart.length === 0) {
-      container.innerHTML = `
-        <div class="empty-cart-msg">
-          <i class="fas fa-shopping-bag"></i>
-          <p>Your bag is currently empty.</p>
-          <a href="index.html" class="btn-shop-now">Explore Collection</a>
-        </div>
-      `;
-      totalSection.style.display = 'none';
-      btnClearAll.style.display = 'none';
-      return;
+      return cleanImg;
     }
 
-    totalSection.style.display = 'block';
-    btnClearAll.style.display = 'inline-flex';
-    
-    let grandTotal = 0;
+    function renderCart() {
+      const listEl = document.getElementById('cartItemsList');
+      const footerEl = document.getElementById('cartFooter');
+      const promoSec = document.getElementById('promoSection');
+      const clearBtn = document.getElementById('clearAllBtn');
 
-    const itemsHtml = groupedCart.map((item, index) => {
-      const itemTotal = item.price * item.quantity;
-      grandTotal += itemTotal;
-      const imgSrc = getCleanImagePath(item.image);
+      if (!cart || cart.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-cart-msg">
+            <i class="fas fa-shopping-bag"></i>
+            <p>Your shopping bag is currently empty.</p>
+            <a href="index.html" class="back-link" style="font-size: 14px;">Browse Products</a>
+          </div>
+        `;
+        footerEl.style.display = 'none';
+        if (promoSec) promoSec.style.display = 'none';
+        if (clearBtn) clearBtn.style.display = 'none';
+        
+        removePromoCode(false);
+        return;
+      }
 
-      return `
-        <div class="cart-item">
-          <div class="item-left">
-            <img src="${imgSrc}" 
-                 alt="${item.title}" 
-                 class="item-img"
-                 onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Ayezling';">
-            <div class="item-details">
-              <span class="item-title">${item.title}</span>
-              <span class="item-price">Rs. ${item.price}</span>
+      footerEl.style.display = 'block';
+      if (promoSec) promoSec.style.display = 'block';
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+
+      currentSubtotal = 0;
+
+      listEl.innerHTML = cart.map((item, index) => {
+        const qty = item.quantity || 1;
+        const itemPrice = Number(item.price) || 0;
+        const itemTotal = itemPrice * qty;
+        currentSubtotal += itemTotal;
+
+        const rawImg = item.image || item.imageUrl || item.img || item.photo;
+        const cleanImg = getCleanImagePath(rawImg);
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-left">
+              <img src="${cleanImg}" 
+                   alt="${item.title || 'Item'}" 
+                   class="cart-item-img"
+                   onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Ayezling+Jewellery';">
+              <div class="cart-item-details">
+                <div class="cart-item-title">${item.title || 'Handcrafted Item'}</div>
+                <div class="cart-item-price">Rs. ${itemPrice}</div>
+              </div>
+            </div>
+
+            <div class="cart-item-right">
+              <div class="quantity-control">
+                <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                <span class="qty-val">${qty}</span>
+                <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+              </div>
+              <button class="delete-item-btn" onclick="removeItem(${index})" title="Remove item">
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           </div>
+        `;
+      }).join('');
 
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="updateQuantity('${item.title.replace(/'/g, "\\'")}', -1)">-</button>
-            <span class="qty-number">${item.quantity}</span>
-            <button class="qty-btn" onclick="updateQuantity('${item.title.replace(/'/g, "\\'")}', 1)">+</button>
-          </div>
-
-          <span class="remove-btn" onclick="removeItemByTitle('${item.title.replace(/'/g, "\\'")}')" title="Remove Item">
-            <i class="fas fa-trash"></i>
-          </span>
-        </div>
-      `;
-    }).join('');
-
-    container.innerHTML = itemsHtml;
-    totalDisplay.innerText = `Rs. ${grandTotal}`;
-  }
-
-  function updateQuantity(title, change) {
-    if (change === 1) {
-      const itemToDuplicate = rawCart.find(i => i.title === title);
-      if (itemToDuplicate) {
-        rawCart.push({ ...itemToDuplicate });
-      }
-    } else if (change === -1) {
-      const indexToRemove = rawCart.findIndex(i => i.title === title);
-      if (indexToRemove !== -1) {
-        rawCart.splice(indexToRemove, 1);
-      }
+      recalculateTotals();
     }
 
-    localStorage.setItem('ayezling_cart', JSON.stringify(rawCart));
-    renderCart();
-  }
+    function recalculateTotals() {
+      document.getElementById('subtotalAmount').innerText = `Rs. ${currentSubtotal}`;
 
-  function removeItemByTitle(title) {
-    rawCart = rawCart.filter(i => i.title !== title);
-    localStorage.setItem('ayezling_cart', JSON.stringify(rawCart));
-    renderCart();
-  }
+      // Check if applied promo is still valid with new subtotal
+      if (appliedPromo) {
+        if (currentSubtotal < (appliedPromo.minOrder || 0)) {
+          showPromoMsg(`Promo removed: Minimum order of Rs. ${appliedPromo.minOrder} required.`, 'error');
+          removePromoCode(false);
+          return;
+        }
 
-  function clearCart() {
-    if (confirm("Are you sure you want to clear your cart?")) {
-      rawCart = [];
-      localStorage.setItem('ayezling_cart', JSON.stringify(rawCart));
+        if (appliedPromo.type === 'percentage') {
+          currentDiscount = Math.round((currentSubtotal * Number(appliedPromo.value)) / 100);
+        } else {
+          currentDiscount = Number(appliedPromo.value) || 0;
+        }
+
+        // Discount cannot exceed subtotal
+        if (currentDiscount > currentSubtotal) {
+          currentDiscount = currentSubtotal;
+        }
+
+        document.getElementById('discountRow').style.display = 'flex';
+        document.getElementById('discountAmount').innerText = `- Rs. ${currentDiscount}`;
+        
+        // Show applied badge
+        const badge = document.getElementById('appliedPromoBadge');
+        badge.style.display = 'inline-block';
+        badge.innerHTML = `
+          <div class="applied-promo-tag">
+            <span>✓ Code <strong>${appliedPromo.code}</strong> Applied (${appliedPromo.type === 'percentage' ? appliedPromo.value + '% OFF' : 'Rs. ' + appliedPromo.value + ' OFF'})</span>
+            <button class="btn-remove-promo" onclick="removePromoCode(true)" title="Remove Promo">&times;</button>
+          </div>
+        `;
+        document.getElementById('promoInputContainer').style.display = 'none';
+      } else {
+        document.getElementById('discountRow').style.display = 'none';
+        document.getElementById('appliedPromoBadge').style.display = 'none';
+        document.getElementById('promoInputContainer').style.display = 'flex';
+        currentDiscount = 0;
+      }
+
+      const finalTotal = Math.max(0, currentSubtotal - currentDiscount);
+      document.getElementById('finalTotalAmount').innerText = `Rs. ${finalTotal}`;
+    }
+
+    function applyPromoCode() {
+      const inputEl = document.getElementById('promoCodeInput');
+      const code = inputEl.value.trim().toUpperCase();
+
+      if (!code) {
+        showPromoMsg('Please enter a promo code.', 'error');
+        return;
+      }
+
+      showPromoMsg('Checking promo code...', 'info');
+
+      database.ref('promos').once('value').then((snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+          showPromoMsg('Invalid promo code.', 'error');
+          return;
+        }
+
+        const promoList = Object.values(data);
+        const foundPromo = promoList.find(p => (p.code || '').toUpperCase() === code);
+
+        if (!foundPromo) {
+          showPromoMsg('Invalid promo code.', 'error');
+          return;
+        }
+
+        const minOrder = Number(foundPromo.minOrder) || 0;
+        if (currentSubtotal < minOrder) {
+          showPromoMsg(`Minimum order of Rs. ${minOrder} required for this code.`, 'error');
+          return;
+        }
+
+        appliedPromo = foundPromo;
+        localStorage.setItem('ayezling_applied_promo', JSON.stringify(appliedPromo));
+        
+        showPromoMsg('Promo code applied successfully!', 'success');
+        inputEl.value = '';
+        recalculateTotals();
+      }).catch((err) => {
+        console.error("Promo error:", err);
+        showPromoMsg('Failed to verify promo code. Try again.', 'error');
+      });
+    }
+
+    function removePromoCode(showMessage = true) {
+      appliedPromo = null;
+      localStorage.removeItem('ayezling_applied_promo');
+      if (showMessage) {
+        showPromoMsg('Promo code removed.', 'info');
+      } else {
+        const msgEl = document.getElementById('promoMsg');
+        if (msgEl) msgEl.style.display = 'none';
+      }
+      recalculateTotals();
+    }
+
+    function showPromoMsg(msg, type) {
+      const msgEl = document.getElementById('promoMsg');
+      if (!msgEl) return;
+      msgEl.innerText = msg;
+      msgEl.className = `promo-msg ${type}`;
+    }
+
+    function updateQuantity(index, delta) {
+      if (!cart[index]) return;
+      
+      let currentQty = cart[index].quantity || 1;
+      currentQty += delta;
+
+      if (currentQty <= 0) {
+        removeItem(index);
+        return;
+      }
+
+      cart[index].quantity = currentQty;
+      saveAndRender();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      saveAndRender();
+    }
+
+    /* CUSTOM MODAL LOGIC */
+    function clearCart() {
+      const modal = document.getElementById('confirmModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeConfirmModal() {
+      const modal = document.getElementById('confirmModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function confirmClearCart() {
+      cart = [];
+      removePromoCode(false);
+      saveAndRender();
+      closeConfirmModal();
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('ayezling_cart', JSON.stringify(cart));
       renderCart();
     }
-  }
 
-  renderCart();
-</script>
+    function proceedToCheckout() {
+      if (cart.length === 0) return;
+      
+      // Save totals to localStorage for Checkout page
+      const finalTotal = Math.max(0, currentSubtotal - currentDiscount);
+      localStorage.setItem('ayezling_checkout_summary', JSON.stringify({
+        subtotal: currentSubtotal,
+        discount: currentDiscount,
+        total: finalTotal,
+        promoCode: appliedPromo ? appliedPromo.code : null
+      }));
 
+      window.location.href = 'checkout.html';
+    }
+
+    window.onload = function() {
+      renderCart();
+    };
+  </script>
 </body>
 </html>

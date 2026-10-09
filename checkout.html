@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout | AYEZLING</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #8C3B5B;
@@ -65,6 +65,11 @@
       justify-content: space-between;
       font-size: 14px;
       margin-bottom: 8px;
+    }
+
+    .summary-row.discount-row {
+      color: #27ae60;
+      font-weight: 600;
     }
 
     .summary-row.total {
@@ -245,8 +250,12 @@
         <strong id="display-item-name" style="text-align: right; max-width: 60%;">Loading...</strong>
       </div>
       <div class="summary-row">
-        <span>Item Price:</span>
+        <span>Subtotal:</span>
         <span id="display-item-price">PKR 0</span>
+      </div>
+      <div class="summary-row discount-row" id="display-discount-row" style="display: none;">
+        <span>Discount (<span id="display-promo-code">PROMO</span>):</span>
+        <span id="display-discount-price">- PKR 0</span>
       </div>
       <div class="summary-row">
         <span>Delivery Fee:</span>
@@ -334,7 +343,9 @@
       appId: "1:178860148015:web:339d74bb9f0b41b6574dda"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     const database = firebase.database();
 
     let lastOrderID = localStorage.getItem('ayezling_last_order_id') || 1000;
@@ -342,10 +353,14 @@
 
     let itemName = '';
     let itemPrice = 0;
+    let discountAmount = 0;
+    let promoCodeUsed = null;
     let totalUnits = 0;
     const deliveryFee = 200;
 
     const cartData = JSON.parse(localStorage.getItem('ayezling_cart')) || [];
+    const summaryData = JSON.parse(localStorage.getItem('ayezling_checkout_summary')) || null;
+    const appliedPromo = JSON.parse(localStorage.getItem('ayezling_applied_promo')) || null;
 
     if (cartData.length > 0) {
       const groupedMap = new Map();
@@ -377,8 +392,29 @@
       totalUnits = 1;
     }
 
-    const totalPrice = itemPrice + deliveryFee;
+    // CHECK PROMO & DISCOUNT FROM SUMMARY / LOCALSTORAGE
+    if (summaryData) {
+      itemPrice = summaryData.subtotal || itemPrice;
+      discountAmount = summaryData.discount || 0;
+      promoCodeUsed = summaryData.promoCode || null;
+    } else if (appliedPromo) {
+      promoCodeUsed = appliedPromo.code;
+      if (appliedPromo.type === 'percentage') {
+        discountAmount = Math.round((itemPrice * Number(appliedPromo.value)) / 100);
+      } else {
+        discountAmount = Number(appliedPromo.value) || 0;
+      }
+    }
 
+    // Ensure discount doesn't exceed itemPrice
+    if (discountAmount > itemPrice) {
+      discountAmount = itemPrice;
+    }
+
+    const netSubtotal = Math.max(0, itemPrice - discountAmount);
+    const totalPrice = netSubtotal + deliveryFee;
+
+    // Minimum order check (Total must be >= 1000 including delivery fee)
     if (totalPrice < 1000) {
       let remaining = 1000 - totalPrice;
       document.getElementById('modalMsg').innerHTML = `
@@ -392,9 +428,19 @@
       window.location.href = 'index.html';
     }
 
+    // UPDATE UI SUMMARY BOX
     document.getElementById('display-order-id').innerText = `#${currentOrderID}`;
     document.getElementById('display-item-name').innerText = itemName || 'No items selected';
     document.getElementById('display-item-price').innerText = `PKR ${itemPrice}`;
+
+    if (discountAmount > 0) {
+      document.getElementById('display-discount-row').style.display = 'flex';
+      document.getElementById('display-promo-code').innerText = promoCodeUsed || 'PROMO';
+      document.getElementById('display-discount-price').innerText = `- PKR ${discountAmount}`;
+    } else {
+      document.getElementById('display-discount-row').style.display = 'none';
+    }
+
     document.getElementById('display-total-price').innerText = `PKR ${totalPrice}`;
 
     function processOrder(event) {
@@ -431,6 +477,8 @@
         itemsSummary: itemName,
         items: cartData.length > 0 ? cartData : [{ name: itemName, price: itemPrice, quantity: 1 }],
         subtotal: itemPrice,
+        discount: discountAmount,
+        promoCode: promoCodeUsed || "N/A",
         deliveryFee: deliveryFee,
         total: totalPrice,
         totalAmount: totalPrice,
@@ -444,9 +492,12 @@
       const newOrderRef = database.ref('orders').push();
       newOrderRef.set(orderData)
         .then(() => {
-          // DIRECT REDIRECT (NO AUTOMATIC EMAIL)
+          // CLEANUP CART & PROMO SESSION
           localStorage.setItem('ayezling_last_order_id', currentOrderID);
           localStorage.removeItem('ayezling_cart');
+          localStorage.removeItem('ayezling_applied_promo');
+          localStorage.removeItem('ayezling_checkout_summary');
+
           window.location.href = `order-success.html?orderId=${currentOrderID}`;
         })
         .catch((error) => {
